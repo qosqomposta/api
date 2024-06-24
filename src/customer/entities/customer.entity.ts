@@ -1,4 +1,3 @@
-import { UserRole } from 'src/roles.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
