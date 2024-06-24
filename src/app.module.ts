@@ -3,20 +3,18 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerModule } from './customer/customer.module';
+import { typeOrmConfig } from './ormconfig';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: 'root',
-            database: 'test',
-            entities: [],
-            //Remove in production
-            synchronize: true,
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: `.env.${process.env.NODE_ENV}`,
+            load: [configuration],
         }),
+        TypeOrmModule.forRoot(typeOrmConfig),
         CustomerModule,
     ],
     controllers: [AppController],
