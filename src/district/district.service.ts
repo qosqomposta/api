@@ -3,6 +3,7 @@ import { UpdateDistrictDto } from './dto/update-district.dto';
 import { District } from './entities/district.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateDistrictDto } from './dto/create-district.dto';
 
 @Injectable()
 export class DistrictService {
@@ -11,8 +12,7 @@ export class DistrictService {
         private districtRepository: Repository<District>,
     ) {}
 
-    async create(district: Partial<District>): Promise<District> {
-        console.log(district);
+    async create(district: CreateDistrictDto): Promise<District> {
         const newDistrict = this.districtRepository.create(district);
         return this.districtRepository.save(newDistrict);
     }
@@ -61,7 +61,7 @@ export class DistrictService {
         await this.districtRepository.save(district);
     }
 
-    async undelete(id: number): Promise<District> {
+    async restore(id: number): Promise<District> {
         const district = await this.districtRepository.findOne({
             where: { district_id: id },
             withDeleted: true,

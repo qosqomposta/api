@@ -7,7 +7,7 @@ import { typeOrmConfig } from './ormconfig';
 import { ConfigModule } from '@nestjs/config';
 import { DistrictModule } from './district/district.module';
 import configuration from './config/configuration';
-import { District } from './district/entities/district.entity';
+import { PickupItemModule } from './pickup-item/pickup-item.module';
 
 @Module({
     imports: [
@@ -20,6 +20,7 @@ import { District } from './district/entities/district.entity';
         // TypeOrmModule.forFeature([District]),
         CustomerModule,
         DistrictModule,
+        PickupItemModule,
     ],
     controllers: [AppController],
     providers: [AppService],
