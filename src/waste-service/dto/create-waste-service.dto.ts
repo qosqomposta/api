@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateDistrictDto {
+export class CreateWasteServiceDto {
     @IsNotEmpty()
     readonly name: string;
 
     @IsString()
-    readonly postalCode: string;
+    readonly description: string;
 }

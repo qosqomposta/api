@@ -1,9 +1,8 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdatePickupItemDto } from './dto/update-pickup-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PickupItem } from './entities/pickup-item.entity';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class PickupItemService {

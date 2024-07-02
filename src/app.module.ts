@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DistrictModule } from './district/district.module';
 import configuration from './config/configuration';
 import { PickupItemModule } from './pickup-item/pickup-item.module';
+import { WasteServiceModule } from './waste-service/waste-service.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { PickupItemModule } from './pickup-item/pickup-item.module';
         CustomerModule,
         DistrictModule,
         PickupItemModule,
+        WasteServiceModule,
     ],
     controllers: [AppController],
     providers: [AppService],
