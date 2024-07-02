@@ -48,7 +48,7 @@ export class DistrictService {
         return this.districtRepository.save(district);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number): Promise<string> {
         const district = await this.districtRepository.findOne({
             where: { district_id: id },
         });
@@ -59,6 +59,8 @@ export class DistrictService {
         district.deletedAt = new Date();
         console.log(district);
         await this.districtRepository.save(district);
+
+        return `District with ID ${id} has been successfully deleted`;
     }
 
     async restore(id: number): Promise<District> {

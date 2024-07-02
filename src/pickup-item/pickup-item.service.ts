@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdatePickupItemDto } from './dto/update-pickup-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PickupItem } from './entities/pickup-item.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class PickupItemService {
@@ -14,6 +15,7 @@ export class PickupItemService {
     async create(createPickupItemDto: Partial<PickupItem>) {
         const newPickUpItem =
             this.pickupItemRepository.create(createPickupItemDto);
+
         return this.pickupItemRepository.save(newPickUpItem);
     }
 
@@ -45,7 +47,7 @@ export class PickupItemService {
         return this.pickupItemRepository.save(pickUpItem);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number): Promise<string> {
         const pickUpItem = await this.pickupItemRepository.findOne({
             where: { pickupItem_id: id },
         });
@@ -54,8 +56,8 @@ export class PickupItemService {
         }
 
         pickUpItem.deletedAt = new Date();
-        console.log(pickUpItem);
         await this.pickupItemRepository.save(pickUpItem);
+        return `Pickup item with ID ${id} has been successfully deleted`;
     }
 
     async restore(id: number): Promise<PickupItem> {

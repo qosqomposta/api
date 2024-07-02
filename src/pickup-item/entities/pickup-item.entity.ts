@@ -1,14 +1,19 @@
-import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class PickupItem {
-    @PrimaryColumn('uuid')
+    @PrimaryGeneratedColumn()
     pickupItem_id: number;
 
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
