@@ -16,7 +16,6 @@ export class WasteServiceService {
     async create(
         createWasteServiceDto: CreateWasteServiceDto,
     ): Promise<WasteService> {
-        console.log(createWasteServiceDto);
         const newWasteService = this.wasteServiceRepository.create({
             ...createWasteServiceDto,
             waste_service_id: randomUUID(),

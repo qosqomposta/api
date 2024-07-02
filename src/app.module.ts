@@ -9,6 +9,7 @@ import { DistrictModule } from './district/district.module';
 import configuration from './config/configuration';
 import { PickupItemModule } from './pickup-item/pickup-item.module';
 import { WasteServiceModule } from './waste-service/waste-service.module';
+import { ServicePricingModule } from './service-pricing/service-pricing.module';
 
 @Module({
     imports: [
@@ -18,11 +19,11 @@ import { WasteServiceModule } from './waste-service/waste-service.module';
             load: [configuration],
         }),
         TypeOrmModule.forRoot(typeOrmConfig),
-        // TypeOrmModule.forFeature([District]),
         CustomerModule,
         DistrictModule,
         PickupItemModule,
         WasteServiceModule,
+        ServicePricingModule,
     ],
     controllers: [AppController],
     providers: [AppService],
