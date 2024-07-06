@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { PickupItemModule } from './pickup-item/pickup-item.module';
 import { WasteServiceModule } from './waste-service/waste-service.module';
 import { ServicePricingModule } from './service-pricing/service-pricing.module';
+import { PlacePickupModule } from './place-pickup/place-pickup.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { ServicePricingModule } from './service-pricing/service-pricing.module';
         PickupItemModule,
         WasteServiceModule,
         ServicePricingModule,
+        PlacePickupModule,
     ],
     controllers: [AppController],
     providers: [AppService],
