@@ -11,6 +11,7 @@ import { PickupItemModule } from './pickup-item/pickup-item.module';
 import { WasteServiceModule } from './waste-service/waste-service.module';
 import { ServicePricingModule } from './service-pricing/service-pricing.module';
 import { PlacePickupModule } from './place-pickup/place-pickup.module';
+import { PickupDayModule } from './pickup-day/pickup-day.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { PlacePickupModule } from './place-pickup/place-pickup.module';
         WasteServiceModule,
         ServicePricingModule,
         PlacePickupModule,
+        PickupDayModule,
     ],
     controllers: [AppController],
     providers: [AppService],

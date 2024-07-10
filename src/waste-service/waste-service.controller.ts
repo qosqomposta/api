@@ -17,7 +17,6 @@ export class WasteServiceController {
 
     @Post()
     create(@Body() createWasteServiceDto: CreateWasteServiceDto) {
-        console.log(createWasteServiceDto);
         return this.wasteServiceService.create(createWasteServiceDto);
     }
 
