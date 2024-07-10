@@ -5,7 +5,7 @@ export class CreatePlacePickupDto {
     readonly name: string;
 
     @IsString()
-    readonly referemce: string;
+    readonly reference: string;
 
     @IsNumber()
     @IsOptional()

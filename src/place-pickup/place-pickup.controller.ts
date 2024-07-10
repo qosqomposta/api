@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    ParseIntPipe,
 } from '@nestjs/common';
 import { PlacePickupService } from './place-pickup.service';
 import { CreatePlacePickupDto } from './dto/create-place-pickup.dto';
@@ -26,20 +27,20 @@ export class PlacePickupController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.placePickupService.findOne(+id);
+    findOne(@Param('id', ParseIntPipe) id: number) {
+        return this.placePickupService.findOne(id);
     }
 
     @Patch(':id')
     update(
-        @Param('id') id: string,
+        @Param('id', ParseIntPipe) id: number,
         @Body() updatePlacePickupDto: UpdatePlacePickupDto,
     ) {
-        return this.placePickupService.update(+id, updatePlacePickupDto);
+        return this.placePickupService.update(id, updatePlacePickupDto);
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.placePickupService.remove(+id);
+    remove(@Param('id', ParseIntPipe) id: number) {
+        return this.placePickupService.remove(id);
     }
 }
