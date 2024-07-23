@@ -1,10 +1,4 @@
-import {
-    IsArray,
-    IsInt,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreatePickupItemDto {
     @IsNotEmpty()
     readonly name: string;
@@ -14,6 +8,6 @@ export class CreatePickupItemDto {
 
     @IsOptional()
     @IsArray()
-    @IsInt({ each: true })
+    @IsString({ each: true })
     readonly wasteServices?: number[];
 }

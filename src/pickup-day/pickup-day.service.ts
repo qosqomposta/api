@@ -3,18 +3,27 @@ import { CreatePickupDayDto } from './dto/create-pickup-day.dto';
 import { UpdatePickupDayDto } from './dto/update-pickup-day.dto';
 import { PickupDay } from './entities/pickup-day.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 
 @Injectable()
 export class PickupDayService {
     constructor(
         @InjectRepository(PickupDay)
         private pickupDayRepository: Repository<PickupDay>,
+
+        @InjectRepository(WasteService)
+        private readonly wasteServiceRepository: Repository<WasteService>,
     ) {}
 
     async create(createPickupDayDto: CreatePickupDayDto): Promise<PickupDay> {
-        const newPickupDay =
-            this.pickupDayRepository.create(createPickupDayDto);
+        const wasteServices = await this.wasteServiceRepository.findBy({
+            waste_service_id: In(createPickupDayDto.wasteServices),
+        });
+        const newPickupDay = this.pickupDayRepository.create({
+            ...createPickupDayDto,
+            wasteServices: wasteServices,
+        });
 
         return this.pickupDayRepository.save(newPickupDay);
     }
@@ -45,7 +54,18 @@ export class PickupDayService {
             throw new NotFoundException(`Pickup Day with ID ${id} not found`);
         }
 
-        pickupDay = { ...pickupDay, ...updatePickupDayDto };
+        const { wasteServices, ...updateParams } = updatePickupDayDto;
+
+        if (wasteServices) {
+            const updatedWasteServices =
+                await this.wasteServiceRepository.findBy({
+                    waste_service_id: In(wasteServices),
+                });
+
+            pickupDay.wasteServices = updatedWasteServices;
+        }
+
+        pickupDay = { ...pickupDay, ...updateParams };
 
         return this.pickupDayRepository.save(pickupDay);
     }
