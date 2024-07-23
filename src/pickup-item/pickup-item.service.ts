@@ -1,19 +1,31 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdatePickupItemDto } from './dto/update-pickup-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { PickupItem } from './entities/pickup-item.entity';
+import { WasteService } from 'src/waste-service/entities/waste-service.entity';
+import { CreatePickupItemDto } from './dto/create-pickup-item.dto';
 
 @Injectable()
 export class PickupItemService {
     constructor(
         @InjectRepository(PickupItem)
         private pickupItemRepository: Repository<PickupItem>,
+
+        @InjectRepository(WasteService)
+        private wasteServiceRepository: Repository<WasteService>,
     ) {}
 
-    async create(createPickupItemDto: Partial<PickupItem>) {
-        const newPickUpItem =
-            this.pickupItemRepository.create(createPickupItemDto);
+    async create(createPickupItemDto: CreatePickupItemDto) {
+        const { wasteServices, ...createParams } = createPickupItemDto;
+
+        const wasteServicesUpdate = await this.wasteServiceRepository.findBy({
+            waste_service_id: In(wasteServices),
+        });
+        const newPickUpItem = this.pickupItemRepository.create({
+            ...createParams,
+            wasteServices: wasteServicesUpdate,
+        });
 
         return this.pickupItemRepository.save(newPickUpItem);
     }
@@ -37,11 +49,22 @@ export class PickupItemService {
         let pickUpItem = await this.pickupItemRepository.findOne({
             where: { pickupItem_id: id },
         });
+
+        const { wasteServices, ...updateParams } = updatePickupItemDto;
         if (!pickUpItem) {
             throw new NotFoundException(`Pickup item with ID ${id} not found`);
         }
 
-        pickUpItem = { ...pickUpItem, ...updatePickupItemDto };
+        if (wasteServices) {
+            const wasteServiceUpdated =
+                await this.wasteServiceRepository.findBy({
+                    waste_service_id: In(wasteServices),
+                });
+
+            pickUpItem.wasteServices = wasteServiceUpdated;
+        }
+
+        pickUpItem = { ...pickUpItem, ...updateParams };
 
         return this.pickupItemRepository.save(pickUpItem);
     }

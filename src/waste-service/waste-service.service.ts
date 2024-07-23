@@ -3,23 +3,41 @@ import { CreateWasteServiceDto } from './dto/create-waste-service.dto';
 import { UpdateWasteServiceDto } from './dto/update-waste-service.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WasteService } from './entities/waste-service.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
+import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
 
 @Injectable()
 export class WasteServiceService {
     constructor(
         @InjectRepository(WasteService)
         private wasteServiceRepository: Repository<WasteService>,
+
+        @InjectRepository(PickupItem)
+        private readonly pickupItemRepository: Repository<PickupItem>,
+
+        @InjectRepository(PickupDay)
+        private readonly pickupDayRepository: Repository<PickupDay>,
     ) {}
 
     async create(
         createWasteServiceDto: CreateWasteServiceDto,
     ): Promise<WasteService> {
+        const pickUpItems = await this.pickupItemRepository.findBy({
+            pickupItem_id: In(createWasteServiceDto.pickupItems),
+        });
+
+        const pickUpDays = await this.pickupDayRepository.findBy({
+            pickupDay_id: In(createWasteServiceDto.pickupDays),
+        });
         const newWasteService = this.wasteServiceRepository.create({
             ...createWasteServiceDto,
+            pickupItems: pickUpItems,
+            pickupDays: pickUpDays,
             waste_service_id: randomUUID(),
         });
+
         return this.wasteServiceRepository.save(newWasteService);
     }
 
@@ -47,13 +65,28 @@ export class WasteServiceService {
         let wasteService = await this.wasteServiceRepository.findOne({
             where: { waste_service_id: id },
         });
+        const { pickupItems, pickupDays, ...updatedParams } =
+            updateWasteServiceDto;
+
         if (!wasteService) {
             throw new NotFoundException(
                 `Waste Service with ID ${id} not found`,
             );
         }
 
-        wasteService = { ...wasteService, ...updateWasteServiceDto };
+        if (pickupDays) {
+            const pickupDaysUpdated = await this.pickupDayRepository.findBy({
+                pickupDay_id: In(pickupDays),
+            });
+            wasteService.pickupDays = pickupDaysUpdated;
+        }
+        if (pickupItems) {
+            const pickupItemsUpdated = await this.pickupItemRepository.findBy({
+                pickupItem_id: In(pickupItems),
+            });
+            wasteService.pickupItems = pickupItemsUpdated;
+        }
+        wasteService = { ...wasteService, ...updatedParams };
 
         return this.wasteServiceRepository.save(wasteService);
     }

@@ -1,3 +1,4 @@
+import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
 import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import {
     Column,
@@ -27,4 +28,10 @@ export class WasteService {
     })
     @JoinTable()
     pickupItems: PickupItem[];
+
+    @ManyToMany(() => PickupDay, (pickupItem) => pickupItem.wasteServices, {
+        nullable: true,
+    })
+    @JoinTable()
+    pickupDays: PickupDay[];
 }

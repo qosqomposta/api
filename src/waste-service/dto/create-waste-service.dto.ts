@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+    IsArray,
+    IsInt,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+} from 'class-validator';
 
 export class CreateWasteServiceDto {
     @IsNotEmpty()
@@ -6,4 +12,14 @@ export class CreateWasteServiceDto {
 
     @IsString()
     readonly description: string;
+
+    @IsOptional()
+    @IsArray()
+    @IsInt({ each: true })
+    readonly pickupDays?: number[];
+
+    @IsOptional()
+    @IsArray()
+    @IsInt({ each: true })
+    readonly pickupItems?: number[];
 }
