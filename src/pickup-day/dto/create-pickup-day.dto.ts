@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
@@ -7,8 +8,10 @@ import {
     IsOptional,
     IsString,
     ValidateIf,
+    ValidateNested,
 } from 'class-validator';
 import { DaysOfWeek } from 'src/enums/days.enum';
+import { CreatePlacePickupDto } from 'src/place-pickup/dto/create-place-pickup.dto';
 
 export class CreatePickupDayDto {
     @IsEnum(DaysOfWeek)
@@ -31,4 +34,15 @@ export class CreatePickupDayDto {
     @IsArray()
     @IsString({ each: true })
     readonly wasteServices?: number[];
+
+    @IsOptional()
+    @IsArray()
+    @IsNumber({}, { each: true })
+    readonly placesPickup?: number[];
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreatePlacePickupDto)
+    readonly newPlacesPickup?: CreatePlacePickupDto[];
 }

@@ -1,7 +1,9 @@
+import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
 import {
     Column,
     DeleteDateColumn,
     Entity,
+    ManyToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -24,4 +26,7 @@ export class PlacePickup {
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
+
+    @ManyToMany(() => PickupDay, (pickupDay) => pickupDay.placePickups)
+    pickupDays: PlacePickup[];
 }

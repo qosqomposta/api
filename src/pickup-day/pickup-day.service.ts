@@ -5,6 +5,8 @@ import { PickupDay } from './entities/pickup-day.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { WasteService } from 'src/waste-service/entities/waste-service.entity';
+import { PlacePickup } from 'src/place-pickup/entities/place-pickup.entity';
+import { PlacePickupService } from 'src/place-pickup/place-pickup.service';
 
 @Injectable()
 export class PickupDayService {
@@ -14,15 +16,32 @@ export class PickupDayService {
 
         @InjectRepository(WasteService)
         private readonly wasteServiceRepository: Repository<WasteService>,
+
+        @InjectRepository(PlacePickup)
+        private readonly placePickUpRepository: Repository<PlacePickup>,
+
+        private readonly placePickupService: PlacePickupService,
     ) {}
 
     async create(createPickupDayDto: CreatePickupDayDto): Promise<PickupDay> {
         const wasteServices = await this.wasteServiceRepository.findBy({
-            waste_service_id: In(createPickupDayDto.wasteServices),
+            waste_service_id: In(createPickupDayDto.wasteServices ?? []),
         });
+        const currentPlacePickups = await this.placePickUpRepository.findBy({
+            placePickup_id: In(createPickupDayDto.placesPickup ?? []),
+        });
+
+        for (const placeData of createPickupDayDto.newPlacesPickup) {
+            const newPlacePickup = await this.placePickupService.create(
+                placeData,
+            );
+            currentPlacePickups.push(newPlacePickup);
+        }
+
         const newPickupDay = this.pickupDayRepository.create({
             ...createPickupDayDto,
             wasteServices: wasteServices,
+            placePickups: currentPlacePickups,
         });
 
         return this.pickupDayRepository.save(newPickupDay);

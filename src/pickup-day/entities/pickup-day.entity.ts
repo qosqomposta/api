@@ -1,9 +1,11 @@
 import { DaysOfWeek } from 'src/enums/days.enum';
+import { PlacePickup } from 'src/place-pickup/entities/place-pickup.entity';
 import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 import {
     Column,
     DeleteDateColumn,
     Entity,
+    JoinTable,
     ManyToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -29,6 +31,10 @@ export class PickupDay {
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
+
+    @ManyToMany(() => PlacePickup, (placePickup) => placePickup.pickupDays)
+    @JoinTable()
+    placePickups: PlacePickup[];
 
     @ManyToMany(() => WasteService, (wasteService) => wasteService.pickupItems)
     wasteServices: WasteService[];
