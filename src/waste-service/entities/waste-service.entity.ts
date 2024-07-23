@@ -1,4 +1,12 @@
-import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    PrimaryColumn,
+} from 'typeorm';
 
 @Entity()
 export class WasteService {
@@ -13,4 +21,10 @@ export class WasteService {
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
+
+    @ManyToMany(() => PickupItem, (pickupItem) => pickupItem.wasteServices, {
+        nullable: true,
+    })
+    @JoinTable()
+    pickupItems: PickupItem[];
 }
