@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    forwardRef,
+    Inject,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { CreatePickupDayDto } from './dto/create-pickup-day.dto';
 import { UpdatePickupDayDto } from './dto/update-pickup-day.dto';
 import { PickupDay } from './entities/pickup-day.entity';
@@ -20,6 +25,7 @@ export class PickupDayService {
         @InjectRepository(PlacePickup)
         private readonly placePickUpRepository: Repository<PlacePickup>,
 
+        @Inject(forwardRef(() => PlacePickupService))
         private readonly placePickupService: PlacePickupService,
     ) {}
 
@@ -31,11 +37,14 @@ export class PickupDayService {
             placePickup_id: In(createPickupDayDto.placesPickup ?? []),
         });
 
-        for (const placeData of createPickupDayDto.newPlacesPickup) {
-            const newPlacePickup = await this.placePickupService.create(
-                placeData,
-            );
-            currentPlacePickups.push(newPlacePickup);
+        const { newPlacesPickup } = createPickupDayDto;
+        if (newPlacesPickup) {
+            for (const placeData of newPlacesPickup) {
+                const newPlacePickup = await this.placePickupService.create(
+                    placeData,
+                );
+                currentPlacePickups.push(newPlacePickup);
+            }
         }
 
         const newPickupDay = this.pickupDayRepository.create({

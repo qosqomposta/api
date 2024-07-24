@@ -4,10 +4,12 @@ import { PlacePickupController } from './place-pickup.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlacePickup } from './entities/place-pickup.entity';
 import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
+import { PickupDayService } from 'src/pickup-day/pickup-day.service';
+import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PlacePickup, PickupDay])],
+    imports: [TypeOrmModule.forFeature([PlacePickup, PickupDay, WasteService])],
     controllers: [PlacePickupController],
-    providers: [PlacePickupService],
+    providers: [PickupDayService, PlacePickupService],
 })
 export class PlacePickupModule {}
