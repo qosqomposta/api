@@ -7,6 +7,8 @@ import { In, Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
+import { PickupDayService } from 'src/pickup-day/pickup-day.service';
+import { PickupItemService } from 'src/pickup-item/pickup-item.service';
 
 @Injectable()
 export class WasteServiceService {
@@ -19,6 +21,9 @@ export class WasteServiceService {
 
         @InjectRepository(PickupDay)
         private readonly pickupDayRepository: Repository<PickupDay>,
+
+        private readonly pickupDayService: PickupDayService,
+        private readonly pickupItemService: PickupItemService,
     ) {}
 
     async create(
@@ -28,13 +33,41 @@ export class WasteServiceService {
             pickupItem_id: In(createWasteServiceDto.pickupItems),
         });
 
+        if (pickUpItems.length === 0) {
+            throw new NotFoundException('No pickup items found.');
+        }
         const pickUpDays = await this.pickupDayRepository.findBy({
             pickupDay_id: In(createWasteServiceDto.pickupDays),
         });
+
+        if (pickUpDays.length === 0) {
+            throw new NotFoundException('No pickup days found.');
+        }
+
+        const { newPickupDays, newPickupItems } = createWasteServiceDto;
+
+        const newDays: PickupDay[] = [];
+        const newItems: PickupItem[] = [];
+
+        if (newPickupDays) {
+            for (const dayData of newPickupDays) {
+                const dayCreated = await this.pickupDayService.create(dayData);
+                newDays.push(dayCreated);
+            }
+        }
+
+        if (newPickupItems) {
+            for (const itemData of newPickupItems) {
+                const itemCreated = await this.pickupItemService.create(
+                    itemData,
+                );
+                newItems.push(itemCreated);
+            }
+        }
         const newWasteService = this.wasteServiceRepository.create({
             ...createWasteServiceDto,
-            pickupItems: pickUpItems,
-            pickupDays: pickUpDays,
+            pickupItems: [...pickUpItems, ...newItems],
+            pickupDays: [...pickUpDays, ...newDays],
             waste_service_id: randomUUID(),
         });
 
