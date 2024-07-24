@@ -72,7 +72,7 @@ export class PlacePickupService {
         const { updatedPickupDays, ...updateParams } = updatePlacePickupDto;
 
         if (updatedPickupDays) {
-            let updatedDays: PickupDay[];
+            const updatedDays: PickupDay[] = [];
             for (const pickupDayData of updatedPickupDays) {
                 const updatedPickupDay = await this.pickupDayService.update(
                     pickupDayData.pickupDay_id,

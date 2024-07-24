@@ -13,3 +13,9 @@ export class UpdatePlacePickupDto extends PartialType(
     @Type(() => UpdatePickupDayWithIdDto)
     readonly updatedPickupDays?: UpdatePickupDayWithIdDto[];
 }
+
+export class UpdatePlacePickupWithIdDto extends PartialType(
+    CreatePlacePickupDto,
+) {
+    pickupPlace_id: number;
+}

@@ -73,7 +73,8 @@ export class PickupDayService {
             throw new NotFoundException(`Pickup Day with ID ${id} not found`);
         }
 
-        const { wasteServices, ...updateParams } = updatePickupDayDto;
+        const { wasteServices, updatedPickupPlaces, ...updateParams } =
+            updatePickupDayDto;
 
         if (wasteServices) {
             const updatedWasteServices =
@@ -82,6 +83,20 @@ export class PickupDayService {
                 });
 
             pickupDay.wasteServices = updatedWasteServices;
+        }
+
+        if (updatedPickupPlaces) {
+            const updatedPlaces: PlacePickup[] = [];
+            for (const place of updatedPickupPlaces) {
+                const updatedPlace = await this.placePickupService.update(
+                    place.pickupPlace_id,
+                    {
+                        ...place,
+                    },
+                );
+                updatedPlaces.push(updatedPlace);
+            }
+            pickupDay.placePickups = updatedPlaces;
         }
 
         pickupDay = { ...pickupDay, ...updateParams };
