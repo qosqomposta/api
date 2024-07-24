@@ -9,5 +9,6 @@ import { WasteService } from 'src/waste-service/entities/waste-service.entity';
     imports: [TypeOrmModule.forFeature([PickupItem, WasteService])],
     controllers: [PickupItemController],
     providers: [PickupItemService],
+    exports: [PickupItemService],
 })
 export class PickupItemModule {}
