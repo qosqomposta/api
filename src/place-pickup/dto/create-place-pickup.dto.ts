@@ -1,4 +1,12 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+    IsArray,
+    IsNumber,
+    IsOptional,
+    IsString,
+    ValidateNested,
+} from 'class-validator';
+import { CreatePickupDayDto } from 'src/pickup-day/dto/create-pickup-day.dto';
 
 export class CreatePlacePickupDto {
     @IsString()
@@ -14,4 +22,15 @@ export class CreatePlacePickupDto {
     @IsNumber()
     @IsOptional()
     readonly longitude: number;
+
+    @IsOptional()
+    @IsArray()
+    @IsNumber({}, { each: true })
+    readonly pickupDays?: number[];
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreatePickupDayDto)
+    readonly newPickupDays?: CreatePickupDayDto[];
 }

@@ -28,5 +28,5 @@ export class PlacePickup {
     deletedAt?: Date;
 
     @ManyToMany(() => PickupDay, (pickupDay) => pickupDay.placePickups)
-    pickupDays: PlacePickup[];
+    pickupDays: PickupDay[];
 }

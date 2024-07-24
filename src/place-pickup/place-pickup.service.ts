@@ -3,20 +3,41 @@ import { CreatePlacePickupDto } from './dto/create-place-pickup.dto';
 import { UpdatePlacePickupDto } from './dto/update-place-pickup.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlacePickup } from './entities/place-pickup.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
+import { PickupDayService } from 'src/pickup-day/pickup-day.service';
 
 @Injectable()
 export class PlacePickupService {
     constructor(
         @InjectRepository(PlacePickup)
         private placePickupRepository: Repository<PlacePickup>,
+
+        @InjectRepository(PickupDay)
+        private pickupDayRepository: Repository<PickupDay>,
+
+        private readonly pickupDayService: PickupDayService,
     ) {}
 
     async create(
         createPlacePickupDto: CreatePlacePickupDto,
     ): Promise<PlacePickup> {
-        const newPlacePickup =
-            this.placePickupRepository.create(createPlacePickupDto);
+        const currentPickupDays = await this.pickupDayRepository.findBy({
+            pickupDay_id: In(createPlacePickupDto.pickupDays ?? []),
+        });
+
+        for (const pickupDayData of createPlacePickupDto.newPickupDays) {
+            const newPlacePickup = await this.pickupDayService.create(
+                pickupDayData,
+            );
+            currentPickupDays.push(newPlacePickup);
+        }
+
+        const newPlacePickup = this.placePickupRepository.create({
+            ...createPlacePickupDto,
+            pickupDays: currentPickupDays,
+        });
+
         return this.placePickupRepository.save(newPlacePickup);
     }
 
@@ -48,7 +69,25 @@ export class PlacePickupService {
             );
         }
 
-        placePickup = { ...placePickup, ...updatePlacePickupDto };
+        const { updatedPickupDays, ...updateParams } = updatePlacePickupDto;
+
+        if (updatedPickupDays) {
+            let updatedDays: PickupDay[];
+            for (const pickupDayData of updatedPickupDays) {
+                const updatedPickupDay = await this.pickupDayService.update(
+                    pickupDayData.pickupDay_id,
+                    {
+                        ...pickupDayData,
+                    },
+                );
+
+                updatedDays.push(updatedPickupDay);
+            }
+
+            placePickup.pickupDays = updatedDays;
+        }
+
+        placePickup = { ...placePickup, ...updateParams };
 
         return this.placePickupRepository.save(placePickup);
     }
