@@ -1,15 +1,19 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PlacePickupService } from './place-pickup.service';
 import { PlacePickupController } from './place-pickup.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlacePickup } from './entities/place-pickup.entity';
 import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
-import { PickupDayService } from 'src/pickup-day/pickup-day.service';
 import { WasteService } from 'src/waste-service/entities/waste-service.entity';
+import { PickupDayModule } from 'src/pickup-day/pickup-day.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PlacePickup, PickupDay, WasteService])],
+    imports: [
+        TypeOrmModule.forFeature([PlacePickup, PickupDay, WasteService]),
+        forwardRef(() => PickupDayModule),
+    ],
     controllers: [PlacePickupController],
-    providers: [PickupDayService, PlacePickupService],
+    providers: [PlacePickupService],
+    exports: [PlacePickupService],
 })
 export class PlacePickupModule {}
