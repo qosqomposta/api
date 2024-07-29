@@ -14,6 +14,7 @@ import { PlacePickupModule } from './place-pickup/place-pickup.module';
 import { PickupDayModule } from './pickup-day/pickup-day.module';
 import { CompanyModule } from './company/company.module';
 import { CourierModule } from './courier/courier.module';
+import { FamilyModule } from './family/family.module';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { CourierModule } from './courier/courier.module';
         PickupDayModule,
         CompanyModule,
         CourierModule,
+        FamilyModule,
     ],
     controllers: [AppController],
     providers: [AppService],
