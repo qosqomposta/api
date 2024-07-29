@@ -13,6 +13,7 @@ import { ServicePricingModule } from './service-pricing/service-pricing.module';
 import { PlacePickupModule } from './place-pickup/place-pickup.module';
 import { PickupDayModule } from './pickup-day/pickup-day.module';
 import { CompanyModule } from './company/company.module';
+import { CourierModule } from './courier/courier.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { CompanyModule } from './company/company.module';
         PlacePickupModule,
         PickupDayModule,
         CompanyModule,
+        CourierModule,
     ],
     controllers: [AppController],
     providers: [AppService],

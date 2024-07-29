@@ -44,8 +44,8 @@ export class DistrictController {
         return this.districtService.remove(+id);
     }
 
-    @Patch(':id/undelete')
-    restoreDistrict(@Param('id') id: string): Promise<District> {
+    @Patch(':id/restore')
+    restore(@Param('id') id: string): Promise<District> {
         return this.districtService.restore(+id);
     }
 }
