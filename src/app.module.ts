@@ -15,6 +15,7 @@ import { PickupDayModule } from './pickup-day/pickup-day.module';
 import { CompanyModule } from './company/company.module';
 import { CourierModule } from './courier/courier.module';
 import { FamilyModule } from './family/family.module';
+import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { FamilyModule } from './family/family.module';
         CompanyModule,
         CourierModule,
         FamilyModule,
+        NeighborhoodModule,
     ],
     controllers: [AppController],
     providers: [AppService],
