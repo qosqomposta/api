@@ -14,11 +14,11 @@ export class DistrictService {
 
     async create(district: CreateDistrictDto): Promise<District> {
         const newDistrict = this.districtRepository.create(district);
-        return this.districtRepository.save(newDistrict);
+        return await this.districtRepository.save(newDistrict);
     }
 
     async findAll(): Promise<District[]> {
-        return this.districtRepository.find() ?? [];
+        return (await this.districtRepository.find()) ?? [];
     }
 
     async findOne(id: number): Promise<District> {
@@ -45,7 +45,7 @@ export class DistrictService {
 
         district = { ...district, ...updateDistrictDto };
 
-        return this.districtRepository.save(district);
+        return await this.districtRepository.save(district);
     }
 
     async remove(id: number): Promise<string> {

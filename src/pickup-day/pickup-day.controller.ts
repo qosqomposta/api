@@ -7,7 +7,6 @@ import {
     Param,
     Delete,
     HttpException,
-    HttpStatus,
 } from '@nestjs/common';
 import { PickupDayService } from './pickup-day.service';
 import { CreatePickupDayDto } from './dto/create-pickup-day.dto';

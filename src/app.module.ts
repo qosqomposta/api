@@ -12,6 +12,7 @@ import { WasteServiceModule } from './waste-service/waste-service.module';
 import { ServicePricingModule } from './service-pricing/service-pricing.module';
 import { PlacePickupModule } from './place-pickup/place-pickup.module';
 import { PickupDayModule } from './pickup-day/pickup-day.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { PickupDayModule } from './pickup-day/pickup-day.module';
         ServicePricingModule,
         PlacePickupModule,
         PickupDayModule,
+        CompanyModule,
     ],
     controllers: [AppController],
     providers: [AppService],
