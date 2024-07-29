@@ -4,6 +4,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class CompanyService {
@@ -12,9 +13,10 @@ export class CompanyService {
         private readonly companyRepository: Repository<Company>,
     ) {}
     async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
-        const newCompany = await this.companyRepository.create(
-            createCompanyDto,
-        );
+        const newCompany = this.companyRepository.create({
+            ...createCompanyDto,
+            company_id: randomUUID(),
+        });
         return await this.companyRepository.save(newCompany);
     }
 
