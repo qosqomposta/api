@@ -18,9 +18,9 @@ export class FamilyService {
     ) {}
     async create(createFamilyDto: CreateFamilyDto) {
         const newFamily = this.familyRepository.create({
+            isActive: true,
             ...createFamilyDto,
             family_id: randomUUID(),
-            isActive: true,
         });
         return await this.familyRepository.save(newFamily);
     }

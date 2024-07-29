@@ -16,8 +16,8 @@ export class NeighborhoodService {
         createNeighborhoodDto: CreateNeighborhoodDto,
     ): Promise<Neighborhood> {
         const newNeighborhood = this.neighborhoodRepository.create({
-            ...createNeighborhoodDto,
             isActive: true,
+            ...createNeighborhoodDto,
             neighborhood_id: randomUUID(),
         });
         return await this.neighborhoodRepository.save(newNeighborhood);

@@ -8,7 +8,7 @@ export class Neighborhood {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     isActive: boolean;
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
