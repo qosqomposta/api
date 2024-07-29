@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { CreatePickupDayDto } from 'src/pickup-day/dto/create-pickup-day.dto';
 import { CreatePickupItemDto } from 'src/pickup-item/dto/create-pickup-item.dto';
+import { CreateServicePricingDto } from 'src/service-pricing/dto/create-service-pricing.dto';
 
 export class CreateWasteServiceDto {
     @IsNotEmpty()
@@ -29,6 +30,11 @@ export class CreateWasteServiceDto {
 
     @IsOptional()
     @IsArray()
+    @IsInt({ each: true })
+    readonly pricings?: number[];
+
+    @IsOptional()
+    @IsArray()
     @ValidateNested({ each: true })
     @Type(() => CreatePickupItemDto)
     readonly newPickupItems?: CreatePickupItemDto[];
@@ -38,4 +44,10 @@ export class CreateWasteServiceDto {
     @ValidateNested({ each: true })
     @Type(() => CreatePickupDayDto)
     readonly newPickupDays?: CreatePickupDayDto[];
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreateServicePricingDto)
+    readonly newPricings?: CreateServicePricingDto[];
 }

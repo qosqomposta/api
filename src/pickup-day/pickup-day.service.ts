@@ -12,6 +12,8 @@ import { In, Repository } from 'typeorm';
 import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 import { PlacePickup } from 'src/place-pickup/entities/place-pickup.entity';
 import { PlacePickupService } from 'src/place-pickup/place-pickup.service';
+import { FindDaysByIdsResponse } from './pickup-day.interfaces';
+import { FindPickUpDayByIdDto } from './dto/find-pickup-day.dto';
 
 @Injectable()
 export class PickupDayService {
@@ -56,8 +58,32 @@ export class PickupDayService {
         return this.pickupDayRepository.save(newPickupDay);
     }
 
+    async findAllByIds(
+        findDto: FindPickUpDayByIdDto,
+    ): Promise<FindDaysByIdsResponse> {
+        const days = await this.pickupDayRepository.findBy({
+            pickupDay_id: In(findDto.dayIds),
+        });
+
+        const notFoundedDays = [...findDto.dayIds].filter(
+            (id) => !days.map((day) => day.pickupDay_id).includes(id),
+        );
+
+        let missingDaysMessage = undefined;
+        if (notFoundedDays.length > 0) {
+            missingDaysMessage = `Items with id's ${notFoundedDays.join(
+                ', ',
+            )} not found.`;
+        }
+
+        return {
+            days: days,
+            notFoundedDaysMessage: missingDaysMessage,
+        };
+    }
+
     async findAll(): Promise<PickupDay[]> {
-        return this.pickupDayRepository.find() ?? [];
+        return (await this.pickupDayRepository.find()) ?? [];
     }
 
     async findOne(id: number): Promise<PickupDay> {

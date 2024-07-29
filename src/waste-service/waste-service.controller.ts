@@ -16,8 +16,11 @@ export class WasteServiceController {
     constructor(private readonly wasteServiceService: WasteServiceService) {}
 
     @Post()
-    create(@Body() createWasteServiceDto: CreateWasteServiceDto) {
-        return this.wasteServiceService.create(createWasteServiceDto);
+    async create(@Body() createWasteServiceDto: CreateWasteServiceDto) {
+        const data = await this.wasteServiceService.create(
+            createWasteServiceDto,
+        );
+        return data;
     }
 
     @Get()

@@ -6,10 +6,13 @@ import {
     Patch,
     Param,
     Delete,
+    HttpException,
+    HttpStatus,
 } from '@nestjs/common';
 import { PickupDayService } from './pickup-day.service';
 import { CreatePickupDayDto } from './dto/create-pickup-day.dto';
 import { UpdatePickupDayDto } from './dto/update-pickup-day.dto';
+import { FindPickUpDayByIdDto } from './dto/find-pickup-day.dto';
 
 @Controller('pickup-day')
 export class PickupDayController {
@@ -28,6 +31,23 @@ export class PickupDayController {
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.pickupDayService.findOne(+id);
+    }
+
+    @Post('find')
+    async findAllByIds(@Body() ids: FindPickUpDayByIdDto) {
+        const days = await this.pickupDayService.findAllByIds(ids);
+        if (days.notFoundedDaysMessage) {
+            throw new HttpException(
+                {
+                    status: 207,
+                    message: days.notFoundedDaysMessage,
+                    data: days,
+                },
+                207,
+            );
+        }
+
+        return days;
     }
 
     @Patch(':id')

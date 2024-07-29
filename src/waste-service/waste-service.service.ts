@@ -9,6 +9,9 @@ import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
 import { PickupDayService } from 'src/pickup-day/pickup-day.service';
 import { PickupItemService } from 'src/pickup-item/pickup-item.service';
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
+import { ServicePricingService } from 'src/service-pricing/service-pricing.service';
+import { CreateWasteServiceResponse } from './waste-service.interfaces';
 
 @Injectable()
 export class WasteServiceService {
@@ -22,13 +25,17 @@ export class WasteServiceService {
         @InjectRepository(PickupDay)
         private readonly pickupDayRepository: Repository<PickupDay>,
 
+        @InjectRepository(ServicePricing)
+        private readonly servicePricingRepository: Repository<ServicePricing>,
+
         private readonly pickupDayService: PickupDayService,
         private readonly pickupItemService: PickupItemService,
+        private readonly servicePricingService: ServicePricingService,
     ) {}
 
     async create(
         createWasteServiceDto: CreateWasteServiceDto,
-    ): Promise<WasteService> {
+    ): Promise<CreateWasteServiceResponse> {
         const pickUpItems = await this.pickupItemRepository.findBy({
             pickupItem_id: In(createWasteServiceDto.pickupItems),
         });
@@ -44,10 +51,20 @@ export class WasteServiceService {
             throw new NotFoundException('No pickup days found.');
         }
 
-        const { newPickupDays, newPickupItems } = createWasteServiceDto;
+        const pricings = await this.servicePricingRepository.findBy({
+            service_pricing_id: In(createWasteServiceDto.pricings),
+        });
+
+        if (pricings.length === 0) {
+            throw new NotFoundException('No pricings found.');
+        }
+
+        const { newPickupDays, newPickupItems, newPricings } =
+            createWasteServiceDto;
 
         const newDays: PickupDay[] = [];
         const newItems: PickupItem[] = [];
+        const newServicePricings: ServicePricing[] = [];
 
         if (newPickupDays) {
             for (const dayData of newPickupDays) {
@@ -64,14 +81,29 @@ export class WasteServiceService {
                 newItems.push(itemCreated);
             }
         }
+
+        if (newPricings) {
+            for (const itemData of newPricings) {
+                const itemCreated = await this.servicePricingService.create(
+                    itemData,
+                );
+                newServicePricings.push(itemCreated);
+            }
+        }
         const newWasteService = this.wasteServiceRepository.create({
             ...createWasteServiceDto,
             pickupItems: [...pickUpItems, ...newItems],
             pickupDays: [...pickUpDays, ...newDays],
+            pricings: [...pricings, ...newServicePricings],
             waste_service_id: randomUUID(),
         });
 
-        return this.wasteServiceRepository.save(newWasteService);
+        const createdWasteService = await this.wasteServiceRepository.save(
+            newWasteService,
+        );
+        return {
+            wasteService: createdWasteService,
+        };
     }
 
     async findAll(): Promise<WasteService[]> {
@@ -98,7 +130,7 @@ export class WasteServiceService {
         let wasteService = await this.wasteServiceRepository.findOne({
             where: { waste_service_id: id },
         });
-        const { pickupItems, pickupDays, ...updatedParams } =
+        const { pickupItems, pickupDays, pricings, ...updatedParams } =
             updateWasteServiceDto;
 
         if (!wasteService) {
@@ -118,6 +150,13 @@ export class WasteServiceService {
                 pickupItem_id: In(pickupItems),
             });
             wasteService.pickupItems = pickupItemsUpdated;
+        }
+
+        if (pricings) {
+            const pricingsUpdated = await this.servicePricingRepository.findBy({
+                service_pricing_id: In(pickupItems),
+            });
+            wasteService.pricings = pricingsUpdated;
         }
         wasteService = { ...wasteService, ...updatedParams };
 
