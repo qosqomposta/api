@@ -42,4 +42,9 @@ export class SubscriptionController {
     remove(@Param('id') id: string) {
         return this.subscriptionService.remove(id);
     }
+
+    @Patch(':id/restore')
+    restore(@Param('id') id: string) {
+        return this.subscriptionService.restore(id);
+    }
 }

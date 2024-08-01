@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Customer {
-    @PrimaryColumn()
-    customer_id: number;
+    @PrimaryColumn({ unique: true })
+    customer_id: string;
 
     @Column()
     name: string;
@@ -14,7 +14,7 @@ export class Customer {
     @Column()
     last_name: string;
 
-    @Column()
+    @Column({ nullable: true })
     mother_last_name: string;
 
     @Column()
@@ -25,4 +25,7 @@ export class Customer {
 
     @Column()
     reference: string;
+
+    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    deletedAt?: Date;
 }
