@@ -8,6 +8,12 @@ export class Family {
     @Column()
     name: string;
 
+    @Column({ default: 'Default address' })
+    address: string;
+
+    @Column({ nullable: true })
+    reference: string;
+
     @Column()
     isActive: boolean;
 

@@ -10,7 +10,7 @@ export class District {
     @PrimaryGeneratedColumn()
     district_id: number;
 
-    @Column({})
+    @Column()
     name: string;
 
     @Column()

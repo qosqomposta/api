@@ -69,16 +69,19 @@ export class FamilyService {
     }
 
     async restore(id: string) {
-        const family = await this.familyRepository.findOneBy({
-            family_id: id,
+        const family = await this.familyRepository.findOne({
+            where: {
+                family_id: id,
+            },
+            withDeleted: true,
         });
 
         if (!family) {
-            throw new NotFoundException(`Pickup item with ID ${id} not found`);
+            throw new NotFoundException(`Family with ID ${id} not found`);
         }
 
         if (!family.deletedAt) {
-            throw new Error(`Pickup item with ID ${id} is not deleted`);
+            throw new Error(`Family with ID ${id} is not deleted`);
         }
 
         family.deletedAt = null;
