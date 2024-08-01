@@ -24,9 +24,9 @@ export class PlacePickup {
     @Column({ nullable: true })
     longitude: number;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
-    deletedAt?: Date;
-
     @ManyToMany(() => PickupDay, (pickupDay) => pickupDay.placePickups)
     pickupDays: PickupDay[];
+
+    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    deletedAt?: Date;
 }

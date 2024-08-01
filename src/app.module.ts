@@ -16,6 +16,7 @@ import { CompanyModule } from './company/company.module';
 import { CourierModule } from './courier/courier.module';
 import { FamilyModule } from './family/family.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
+import { PaymentMethodModule } from './payment-method/payment-method.module';
 
 @Module({
     imports: [
@@ -36,6 +37,7 @@ import { NeighborhoodModule } from './neighborhood/neighborhood.module';
         CourierModule,
         FamilyModule,
         NeighborhoodModule,
+        PaymentMethodModule,
     ],
     controllers: [AppController],
     providers: [AppService],
