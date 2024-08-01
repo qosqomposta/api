@@ -112,7 +112,7 @@ export class PlacePickupService {
         placePickup.deletedAt = new Date();
 
         await this.placePickupRepository.save(placePickup);
-        return `This action removes a #${id} placePickup`;
+        return `Place pickup with ID #${id} was removed`;
     }
 
     async restore(id: number): Promise<PlacePickup> {
