@@ -17,6 +17,7 @@ import { CourierModule } from './courier/courier.module';
 import { FamilyModule } from './family/family.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
         FamilyModule,
         NeighborhoodModule,
         PaymentMethodModule,
+        SubscriptionModule,
     ],
     controllers: [AppController],
     providers: [AppService],
