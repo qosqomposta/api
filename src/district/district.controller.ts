@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    HttpCode,
 } from '@nestjs/common';
 import { DistrictService } from './district.service';
 import { CreateDistrictDto } from './dto/create-district.dto';
@@ -40,12 +41,13 @@ export class DistrictController {
     }
 
     @Delete(':id')
+    @HttpCode(204)
     remove(@Param('id') id: string) {
         return this.districtService.remove(+id);
     }
 
     @Patch(':id/restore')
-    restore(@Param('id') id: string): Promise<District> {
+    restore(@Param('id') id: string) {
         return this.districtService.restore(+id);
     }
 }

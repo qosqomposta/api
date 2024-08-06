@@ -9,7 +9,7 @@ import { CreateDistrictDto } from './dto/create-district.dto';
 export class DistrictService {
     constructor(
         @InjectRepository(District)
-        private districtRepository: Repository<District>,
+        private readonly districtRepository: Repository<District>,
     ) {}
 
     async create(district: CreateDistrictDto): Promise<District> {
@@ -48,7 +48,7 @@ export class DistrictService {
         return await this.districtRepository.save(district);
     }
 
-    async remove(id: number): Promise<string> {
+    async remove(id: number): Promise<void> {
         const district = await this.districtRepository.findOne({
             where: { district_id: id },
         });
@@ -58,8 +58,6 @@ export class DistrictService {
 
         district.deletedAt = new Date();
         await this.districtRepository.save(district);
-
-        return `District with ID ${id} has been successfully deleted`;
     }
 
     async restore(id: number): Promise<District> {

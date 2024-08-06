@@ -18,6 +18,7 @@ import { FamilyModule } from './family/family.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { DeliveryOrderModule } from './delivery-order/delivery-order.module';
 
 @Module({
     imports: [
@@ -40,6 +41,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
         NeighborhoodModule,
         PaymentMethodModule,
         SubscriptionModule,
+        DeliveryOrderModule,
     ],
     controllers: [AppController],
     providers: [AppService],
