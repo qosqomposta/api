@@ -9,43 +9,8 @@ on:
             - main
 
 jobs:
-    setup:
-        runs-on: ubuntu-latest
-        outputs:
-            node-cache: ${{ steps.node-cache.outputs.cache-hit }}
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup Node.js
-              id: node-setup
-              uses: actions/setup-node@v4
-              with:
-                  node-version: '20'
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4.0.0
-              with:
-                  version: 9
-
-            - name: Cache pnpm store
-              id: pnpm_cache
-              uses: actions/cache@v4
-              with:
-                  path: ~/.pnpm-store
-                  key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-
-
-            - name: Install dependencies
-              run: pnpm install
-
-            - name: Upload pnpm store
-              if: steps.pnpm_cache.outputs.cache-hit != 'true'
-              run: pnpm store prune
     lint:
         runs-on: ubuntu-latest
-        needs: setup
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -54,7 +19,10 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: '20'
-
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4.0.0
+              with:
+                  version: 9
             - name: Install dependencies
               run: pnpm install
 
@@ -63,7 +31,6 @@ jobs:
 
     unit_tests:
         runs-on: ubuntu-latest
-        needs: lint
         steps:
             - name: Checkout code
               uses: actions/checkout@v4 # Actualizado a la versión v4
@@ -81,7 +48,7 @@ jobs:
 
     build:
         runs-on: ubuntu-latest
-        needs: [unit_tests]
+        needs: [unit_tests, lint]
         steps:
             - name: Checkout code
               uses: actions/checkout@v4 # Actualizado a la versión v4
