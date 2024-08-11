@@ -1,5 +1,5 @@
 name: CI/CD Pipeline
-run-name: Main CI?DS Pipeline
+run-name: Main CI / CD Pipeline
 on:
     push:
         branches:
