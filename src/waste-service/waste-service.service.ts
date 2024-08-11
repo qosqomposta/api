@@ -107,7 +107,13 @@ export class WasteServiceService {
     }
 
     async findAll(): Promise<WasteService[]> {
-        return this.wasteServiceRepository.find() ?? [];
+        return this.wasteServiceRepository.find({
+            relations: {
+                pickupDays: true,
+                pickupItems: true,
+                pricings: true,
+            },
+        });
     }
 
     async findOne(id: string): Promise<WasteService> {

@@ -1,12 +1,15 @@
 import { Type } from 'class-transformer';
 import {
     IsArray,
+    IsBoolean,
+    IsEnum,
     IsInt,
     IsNotEmpty,
     IsOptional,
     IsString,
     ValidateNested,
 } from 'class-validator';
+import { ClientType } from 'src/enums/clientType.enum';
 import { CreatePickupDayDto } from 'src/pickup-day/dto/create-pickup-day.dto';
 import { CreatePickupItemDto } from 'src/pickup-item/dto/create-pickup-item.dto';
 import { CreateServicePricingDto } from 'src/service-pricing/dto/create-service-pricing.dto';
@@ -17,6 +20,13 @@ export class CreateWasteServiceDto {
 
     @IsString()
     readonly description: string;
+
+    @IsOptional()
+    @IsBoolean()
+    readonly isDefault: boolean;
+
+    @IsEnum(ClientType)
+    readonly clientType: string;
 
     @IsOptional()
     @IsArray()

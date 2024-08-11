@@ -1,3 +1,4 @@
+import { ClientType } from 'src/enums/clientType.enum';
 import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
 import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
@@ -20,6 +21,15 @@ export class WasteService {
 
     @Column({ nullable: true })
     description: string;
+
+    @Column({ nullable: true })
+    isDefault: boolean;
+
+    @Column({
+        nullable: true,
+        enum: ClientType,
+    })
+    clientType: string;
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
