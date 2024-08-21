@@ -14,4 +14,8 @@ export class CreateFamilyDto {
     @IsBoolean()
     @IsOptional()
     isActive: boolean;
+
+    @IsString()
+    @IsOptional()
+    customId: string;
 }

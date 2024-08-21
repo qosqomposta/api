@@ -19,6 +19,7 @@ import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { DeliveryOrderModule } from './delivery-order/delivery-order.module';
+import { SummaryClientService } from './summary-client/summary-client.service';
 
 @Module({
     imports: [
@@ -44,6 +45,6 @@ import { DeliveryOrderModule } from './delivery-order/delivery-order.module';
         DeliveryOrderModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, SummaryClientService],
 })
 export class AppModule {}
