@@ -10,17 +10,15 @@ import {
 import { WasteServiceService } from './waste-service.service';
 import { CreateWasteServiceDto } from './dto/create-waste-service.dto';
 import { UpdateWasteServiceDto } from './dto/update-waste-service.dto';
+import { RemoveWasteServicePricings } from './dto/remove-pricings.dto';
 
 @Controller('waste-service')
 export class WasteServiceController {
     constructor(private readonly wasteServiceService: WasteServiceService) {}
 
     @Post()
-    async create(@Body() createWasteServiceDto: CreateWasteServiceDto) {
-        const data = await this.wasteServiceService.create(
-            createWasteServiceDto,
-        );
-        return data;
+    create(@Body() createWasteServiceDto: CreateWasteServiceDto) {
+        return this.wasteServiceService.create(createWasteServiceDto);
     }
 
     @Get()
@@ -49,5 +47,10 @@ export class WasteServiceController {
     @Patch(':id/undelete')
     restoreWasteService(@Param('id') id: string) {
         return this.wasteServiceService.restore(id);
+    }
+
+    @Post('/remove-pricings')
+    removePricings(@Body() removePricings: RemoveWasteServicePricings) {
+        return this.wasteServiceService.removePricings(removePricings);
     }
 }

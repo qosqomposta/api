@@ -12,6 +12,7 @@ import { PickupItemService } from 'src/pickup-item/pickup-item.service';
 import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 import { ServicePricingService } from 'src/service-pricing/service-pricing.service';
 import { CreateWasteServiceResponse } from './waste-service.interfaces';
+import { RemoveWasteServicePricings } from './dto/remove-pricings.dto';
 
 @Injectable()
 export class WasteServiceService {
@@ -204,5 +205,28 @@ export class WasteServiceService {
 
         wasteService.deletedAt = null;
         return this.wasteServiceRepository.save(wasteService);
+    }
+
+    async removePricings(
+        removePricings: RemoveWasteServicePricings,
+    ): Promise<WasteService> {
+        const { service_id: id, pricingsIds: pricingsIdsToRemove } =
+            removePricings;
+        const wasteService = await this.wasteServiceRepository.findOne({
+            where: { waste_service_id: id },
+            relations: {
+                pricings: true,
+            },
+        });
+        if (!wasteService) {
+            throw new NotFoundException(
+                `Waste Service with ID ${id} not found`,
+            );
+        }
+
+        wasteService.pricings = wasteService.pricings.filter((price) => {
+            return !pricingsIdsToRemove.includes(price.service_pricing_id);
+        });
+        return await this.wasteServiceRepository.save(wasteService);
     }
 }

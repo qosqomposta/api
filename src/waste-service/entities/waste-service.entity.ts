@@ -48,6 +48,7 @@ export class WasteService {
 
     @ManyToMany(() => ServicePricing, (pricing) => pricing.wasteServices, {
         nullable: true,
+        cascade: true,
     })
     @JoinTable()
     pricings: ServicePricing[];
