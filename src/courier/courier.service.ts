@@ -25,12 +25,12 @@ export class CourierService {
     }
 
     async findOne(id: string): Promise<Courier> {
-        return await this.courierRepository.findOneBy({ courier_id: id });
+        return await this.courierRepository.findOneBy({ id: id });
     }
 
     async update(id: string, updateCourierDto: UpdateCourierDto) {
         let courier = await this.courierRepository.findOne({
-            where: { courier_id: id },
+            where: { id: id },
         });
 
         if (!courier) {
@@ -42,7 +42,7 @@ export class CourierService {
 
     async remove(id: string): Promise<string> {
         const courier = await this.courierRepository.findOne({
-            where: { courier_id: id },
+            where: { id: id },
         });
         if (!courier) {
             throw new NotFoundException(`Courier with ID ${id} not found`);
@@ -56,7 +56,7 @@ export class CourierService {
 
     async restore(id: string): Promise<Courier> {
         const courier = await this.courierRepository.findOne({
-            where: { courier_id: id },
+            where: { id: id },
             withDeleted: true,
         });
 

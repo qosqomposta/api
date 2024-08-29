@@ -17,7 +17,7 @@ export class SubscriptionService {
     ): Promise<Subscription> {
         const newSubscription = this.subscriptionRepository.create({
             ...createSubscriptionDto,
-            subscription_id: randomUUID(),
+            id: randomUUID(),
         });
         return await this.subscriptionRepository.save(newSubscription);
     }
@@ -28,7 +28,7 @@ export class SubscriptionService {
 
     async findOne(id: string): Promise<Subscription> {
         const subscription = this.subscriptionRepository.findOneBy({
-            subscription_id: id,
+            id: id,
         });
         if (!subscription) {
             throw new NotFoundException(`Subscription with id ${id} not found`);
@@ -41,7 +41,7 @@ export class SubscriptionService {
         updateSubscriptionDto: UpdateSubscriptionDto,
     ): Promise<Subscription> {
         let subscription = await this.subscriptionRepository.findOneBy({
-            subscription_id: id,
+            id: id,
         });
         if (!subscription) {
             throw new NotFoundException(`Subscription with id ${id} not found`);
@@ -53,7 +53,7 @@ export class SubscriptionService {
 
     async remove(id: string): Promise<string> {
         const subscription = await this.subscriptionRepository.findOneBy({
-            subscription_id: id,
+            id: id,
         });
         if (!subscription) {
             throw new NotFoundException(`Subscription with id ${id} not found`);
@@ -68,7 +68,7 @@ export class SubscriptionService {
     async restore(id: string): Promise<Subscription> {
         const subscription = await this.subscriptionRepository.findOne({
             where: {
-                subscription_id: id,
+                id: id,
             },
             withDeleted: true,
         });

@@ -17,7 +17,7 @@ import {
 @Entity()
 export class Subscription {
     @PrimaryColumn({ unique: true })
-    subscription_id: string;
+    id: string;
 
     @Column({ nullable: true, type: 'datetime' })
     startDate: Date;

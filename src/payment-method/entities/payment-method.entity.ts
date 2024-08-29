@@ -9,7 +9,7 @@ import { PaymentsEnum } from '../payment-method.enum';
 @Entity()
 export class PaymentMethod {
     @PrimaryGeneratedColumn()
-    payment_method_id: number;
+    id: number;
 
     @Column({
         enum: PaymentsEnum,

@@ -26,7 +26,7 @@ export class PaymentMethodService {
 
     async findOne(id: number): Promise<PaymentMethod> {
         const paymentMethod = await this.paymentMethodRepository.findOneBy({
-            payment_method_id: id,
+            id: id,
         });
 
         if (!paymentMethod) {
@@ -42,7 +42,7 @@ export class PaymentMethodService {
         updatePaymentMethodDto: UpdatePaymentMethodDto,
     ): Promise<PaymentMethod> {
         let paymentMethod = await this.paymentMethodRepository.findOneBy({
-            payment_method_id: id,
+            id: id,
         });
 
         if (!paymentMethod) {
@@ -57,7 +57,7 @@ export class PaymentMethodService {
 
     async remove(id: number): Promise<string> {
         const paymentMethod = await this.paymentMethodRepository.findOne({
-            where: { payment_method_id: id },
+            where: { id: id },
         });
         if (!paymentMethod) {
             throw new NotFoundException(
@@ -73,7 +73,7 @@ export class PaymentMethodService {
 
     async restore(id: number): Promise<PaymentMethod> {
         const servicePricing = await this.paymentMethodRepository.findOne({
-            where: { payment_method_id: id },
+            where: { id: id },
             withDeleted: true,
         });
 

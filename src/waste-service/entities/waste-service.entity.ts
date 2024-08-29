@@ -15,7 +15,7 @@ import {
 
 @Entity()
 export class WasteService {
-    @PrimaryColumn({ unique: true })
+    @PrimaryColumn()
     waste_service_id: string;
 
     @Column()
@@ -48,7 +48,7 @@ export class WasteService {
     @JoinTable({ name: 'waste_service_days' })
     pickupDays: PickupDay[];
 
-    @OneToMany(() => ServicePricing, (pricing) => pricing.wasteServices, {
+    @OneToMany(() => ServicePricing, (pricing) => pricing.wasteService, {
         nullable: true,
     })
     pricings: ServicePricing[];

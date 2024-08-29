@@ -13,7 +13,7 @@ import {
 @Entity()
 export class ServicePricing {
     @PrimaryColumn()
-    service_pricing_id: string;
+    id: string;
 
     @Column()
     price: number;
@@ -24,11 +24,11 @@ export class ServicePricing {
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
-    @ManyToOne(() => WasteService, (pickupItem) => pickupItem.pricings, {
+    @ManyToOne(() => WasteService, (service) => service.pricings, {
         nullable: true,
     })
-    @JoinColumn({ name: 'waste_service' })
-    wasteServices: WasteService;
+    @JoinColumn({ name: 'waste_service_id' })
+    wasteService: WasteService;
 
     @ManyToMany(() => Subscription, (subscription) => subscription.pricings)
     subscriptions: Subscription[];

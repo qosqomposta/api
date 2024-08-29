@@ -17,7 +17,7 @@ export class ServicePricingService {
     ): Promise<ServicePricing> {
         const newServicePricing = this.servicePricingRepository.create({
             ...createServicePricingDto,
-            service_pricing_id: randomUUID(),
+            id: randomUUID(),
         });
         return this.servicePricingRepository.save(newServicePricing);
     }
@@ -28,7 +28,7 @@ export class ServicePricingService {
 
     async findOne(id: string): Promise<ServicePricing> {
         const servicePricing = await this.servicePricingRepository.findOne({
-            where: { service_pricing_id: id },
+            where: { id: id },
         });
         if (!servicePricing) {
             throw new NotFoundException(
@@ -44,7 +44,7 @@ export class ServicePricingService {
         updateServicePricingDto: UpdateServicePricingDto,
     ): Promise<ServicePricing> {
         let servicePricing = await this.servicePricingRepository.findOne({
-            where: { service_pricing_id: id },
+            where: { id: id },
         });
         if (!servicePricing) {
             throw new NotFoundException(
@@ -59,7 +59,7 @@ export class ServicePricingService {
 
     async remove(id: string): Promise<string> {
         const servicePricing = await this.servicePricingRepository.findOne({
-            where: { service_pricing_id: id },
+            where: { id: id },
         });
         if (!servicePricing) {
             throw new NotFoundException(
@@ -76,7 +76,7 @@ export class ServicePricingService {
 
     async restore(id: string): Promise<ServicePricing> {
         const servicePricing = await this.servicePricingRepository.findOne({
-            where: { service_pricing_id: id },
+            where: { id: id },
             withDeleted: true,
         });
 

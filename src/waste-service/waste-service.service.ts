@@ -53,7 +53,7 @@ export class WasteServiceService {
         }
 
         const pricings = await this.servicePricingRepository.findBy({
-            service_pricing_id: In(createWasteServiceDto.pricings),
+            id: In(createWasteServiceDto.pricings),
         });
 
         if (pricings.length === 0) {
@@ -161,7 +161,7 @@ export class WasteServiceService {
 
         if (pricings) {
             const pricingsUpdated = await this.servicePricingRepository.findBy({
-                service_pricing_id: In(pickupItems),
+                id: In(pickupItems),
             });
             wasteService.pricings = pricingsUpdated;
         }
@@ -225,7 +225,7 @@ export class WasteServiceService {
         }
 
         wasteService.pricings = wasteService.pricings.filter((price) => {
-            return !pricingsIdsToRemove.includes(price.service_pricing_id);
+            return !pricingsIdsToRemove.includes(price.id);
         });
         return await this.wasteServiceRepository.save(wasteService);
     }

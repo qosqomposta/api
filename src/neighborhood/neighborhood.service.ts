@@ -18,7 +18,7 @@ export class NeighborhoodService {
         const newNeighborhood = this.neighborhoodRepository.create({
             isActive: true,
             ...createNeighborhoodDto,
-            neighborhood_id: randomUUID(),
+            id: randomUUID(),
         });
         return await this.neighborhoodRepository.save(newNeighborhood);
     }
@@ -29,7 +29,7 @@ export class NeighborhoodService {
 
     async findOne(id: string): Promise<Neighborhood> {
         const neighborhood = await this.neighborhoodRepository.findOneBy({
-            neighborhood_id: id,
+            id: id,
         });
 
         if (!neighborhood) {
@@ -44,7 +44,7 @@ export class NeighborhoodService {
         updateNeighborhoodDto: UpdateNeighborhoodDto,
     ): Promise<Neighborhood> {
         let neighborhood = await this.neighborhoodRepository.findOneBy({
-            neighborhood_id: id,
+            id: id,
         });
 
         if (!neighborhood) {
@@ -57,7 +57,7 @@ export class NeighborhoodService {
 
     async remove(id: string) {
         const neighborhood = await this.neighborhoodRepository.findOneBy({
-            neighborhood_id: id,
+            id: id,
         });
 
         if (!neighborhood) {
@@ -72,7 +72,7 @@ export class NeighborhoodService {
 
     async restore(id: string): Promise<Neighborhood> {
         const neighborhood = await this.neighborhoodRepository.findOneBy({
-            neighborhood_id: id,
+            id: id,
         });
 
         if (!neighborhood) {

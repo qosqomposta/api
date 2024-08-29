@@ -3,7 +3,7 @@ import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
 @Entity()
 export class DeliveryOrder {
     @PrimaryColumn({ unique: true })
-    deliver_order_id: string;
+    id: string;
 
     @Column()
     dateReceived: Date;

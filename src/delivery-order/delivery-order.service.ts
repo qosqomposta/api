@@ -18,7 +18,7 @@ export class DeliveryOrderService {
     ): Promise<DeliveryOrder> {
         const newDeliveryOrder = this.deliveryOrderRepository.create({
             ...createDeliveryOrderDto,
-            deliver_order_id: randomUUID(),
+            id: randomUUID(),
         });
         return await this.deliveryOrderRepository.save(newDeliveryOrder);
     }
@@ -29,7 +29,7 @@ export class DeliveryOrderService {
 
     async findOne(id: string): Promise<DeliveryOrder[]> {
         const deliveryOrder = this.deliveryOrderRepository.findBy({
-            deliver_order_id: id,
+            id: id,
         });
 
         if (!deliveryOrder) {
@@ -45,7 +45,7 @@ export class DeliveryOrderService {
         updateDeliveryOrderDto: UpdateDeliveryOrderDto,
     ): Promise<DeliveryOrder> {
         let deliveryOrder = await this.deliveryOrderRepository.findOneBy({
-            deliver_order_id: id,
+            id: id,
         });
 
         if (!deliveryOrder) {
@@ -61,7 +61,7 @@ export class DeliveryOrderService {
 
     async remove(id: string) {
         const deliveryOrder = await this.deliveryOrderRepository.findOneBy({
-            deliver_order_id: id,
+            id: id,
         });
 
         if (!deliveryOrder) {
@@ -76,7 +76,7 @@ export class DeliveryOrderService {
 
     async restore(id: string) {
         const deliveryOrder = await this.deliveryOrderRepository.findOneBy({
-            deliver_order_id: id,
+            id: id,
         });
 
         if (!deliveryOrder) {

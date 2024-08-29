@@ -10,7 +10,7 @@ import {
 @Entity()
 export class Company {
     @PrimaryColumn()
-    company_id: string;
+    id: string;
 
     @Column()
     name: string;
