@@ -1,17 +1,19 @@
+import { Subscription } from 'src/subscription/entities/subscription.entity';
 import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 import {
     Column,
     DeleteDateColumn,
     Entity,
-    JoinTable,
+    JoinColumn,
     ManyToMany,
-    PrimaryGeneratedColumn,
+    ManyToOne,
+    PrimaryColumn,
 } from 'typeorm';
 
 @Entity()
 export class ServicePricing {
-    @PrimaryGeneratedColumn()
-    service_pricing_id: number;
+    @PrimaryColumn()
+    service_pricing_id: string;
 
     @Column()
     price: number;
@@ -22,9 +24,12 @@ export class ServicePricing {
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
-    @ManyToMany(() => WasteService, (pickupItem) => pickupItem.pricings, {
+    @ManyToOne(() => WasteService, (pickupItem) => pickupItem.pricings, {
         nullable: true,
     })
-    @JoinTable()
-    wasteServices: WasteService[];
+    @JoinColumn({ name: 'waste_service' })
+    wasteServices: WasteService;
+
+    @ManyToMany(() => Subscription, (subscription) => subscription.pricings)
+    subscriptions: Subscription[];
 }

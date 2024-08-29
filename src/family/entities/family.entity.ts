@@ -1,9 +1,11 @@
+import { Customer } from 'src/customer/entities/customer.entity';
 import { Subscription } from 'src/subscription/entities/subscription.entity';
 import {
     Column,
     DeleteDateColumn,
     Entity,
     OneToMany,
+    OneToOne,
     PrimaryColumn,
 } from 'typeorm';
 
@@ -30,6 +32,9 @@ export class Family {
     @Column({ nullable: true })
     customId: string;
 
-    @OneToMany(() => Subscription, (subscription) => subscription.family)
+    @OneToMany(() => Customer, (customer) => customer.family)
+    customers: Customer[];
+
+    @OneToOne(() => Subscription, (subscription) => subscription.family)
     subscriptions: Subscription[];
 }

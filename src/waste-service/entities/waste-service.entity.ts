@@ -8,6 +8,8 @@ import {
     Entity,
     JoinTable,
     ManyToMany,
+    OneToMany,
+    OneToOne,
     PrimaryColumn,
 } from 'typeorm';
 
@@ -37,19 +39,17 @@ export class WasteService {
     @ManyToMany(() => PickupItem, (pickupItem) => pickupItem.wasteServices, {
         nullable: true,
     })
-    @JoinTable()
+    @JoinTable({ name: 'waste_service_items' })
     pickupItems: PickupItem[];
 
     @ManyToMany(() => PickupDay, (pickupItem) => pickupItem.wasteServices, {
         nullable: true,
     })
-    @JoinTable()
+    @JoinTable({ name: 'waste_service_days' })
     pickupDays: PickupDay[];
 
-    @ManyToMany(() => ServicePricing, (pricing) => pricing.wasteServices, {
+    @OneToMany(() => ServicePricing, (pricing) => pricing.wasteServices, {
         nullable: true,
-        cascade: true,
     })
-    @JoinTable()
     pricings: ServicePricing[];
 }

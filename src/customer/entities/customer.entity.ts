@@ -1,4 +1,12 @@
-import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { Family } from 'src/family/entities/family.entity';
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+} from 'typeorm';
 
 @Entity()
 export class Customer {
@@ -8,24 +16,28 @@ export class Customer {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     document_identity: number;
 
-    @Column()
+    @Column({ nullable: true })
     last_name: string;
 
     @Column({ nullable: true })
     mother_last_name: string;
 
-    @Column()
+    @Column({ nullable: true })
     email: string;
 
-    @Column()
+    @Column({ nullable: true })
     phoneNumber: string;
 
-    @Column()
-    reference: string;
+    @Column({ nullable: true })
+    customId: string;
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
+
+    @ManyToOne(() => Family, (family) => family.customers)
+    @JoinColumn({ name: 'family_id' })
+    family: Family;
 }

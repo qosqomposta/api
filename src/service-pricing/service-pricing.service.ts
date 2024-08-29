@@ -4,6 +4,7 @@ import { UpdateServicePricingDto } from './dto/update-service-pricing.dto';
 import { ServicePricing } from './entities/service-pricing.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ServicePricingService {
@@ -14,9 +15,10 @@ export class ServicePricingService {
     async create(
         createServicePricingDto: CreateServicePricingDto,
     ): Promise<ServicePricing> {
-        const newServicePricing = this.servicePricingRepository.create(
-            createServicePricingDto,
-        );
+        const newServicePricing = this.servicePricingRepository.create({
+            ...createServicePricingDto,
+            service_pricing_id: randomUUID(),
+        });
         return this.servicePricingRepository.save(newServicePricing);
     }
 
@@ -24,7 +26,7 @@ export class ServicePricingService {
         return this.servicePricingRepository.find() ?? [];
     }
 
-    async findOne(id: number): Promise<ServicePricing> {
+    async findOne(id: string): Promise<ServicePricing> {
         const servicePricing = await this.servicePricingRepository.findOne({
             where: { service_pricing_id: id },
         });
@@ -38,7 +40,7 @@ export class ServicePricingService {
     }
 
     async update(
-        id: number,
+        id: string,
         updateServicePricingDto: UpdateServicePricingDto,
     ): Promise<ServicePricing> {
         let servicePricing = await this.servicePricingRepository.findOne({
@@ -55,7 +57,7 @@ export class ServicePricingService {
         return this.servicePricingRepository.save(servicePricing);
     }
 
-    async remove(id: number): Promise<string> {
+    async remove(id: string): Promise<string> {
         const servicePricing = await this.servicePricingRepository.findOne({
             where: { service_pricing_id: id },
         });
@@ -72,7 +74,7 @@ export class ServicePricingService {
         return `Waste Service with ID ${id} has been successfully deleted`;
     }
 
-    async restore(id: number): Promise<ServicePricing> {
+    async restore(id: string): Promise<ServicePricing> {
         const servicePricing = await this.servicePricingRepository.findOne({
             where: { service_pricing_id: id },
             withDeleted: true,

@@ -6,5 +6,5 @@ export class RemoveWasteServicePricings {
 
     @IsArray()
     @IsInt({ each: true })
-    readonly pricingsIds: number[];
+    readonly pricingsIds: string[];
 }

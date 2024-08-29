@@ -33,7 +33,7 @@ export class PickupDay {
     deletedAt?: Date;
 
     @ManyToMany(() => PlacePickup, (placePickup) => placePickup.pickupDays)
-    @JoinTable()
+    @JoinTable({ name: 'pickupDays_placePickup' })
     placePickups: PlacePickup[];
 
     @ManyToMany(() => WasteService, (wasteService) => wasteService.pickupItems)

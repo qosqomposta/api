@@ -1,4 +1,11 @@
-import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { Subscription } from 'src/subscription/entities/subscription.entity';
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryColumn,
+} from 'typeorm';
 
 @Entity()
 export class Company {
@@ -31,4 +38,7 @@ export class Company {
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
+
+    @OneToMany(() => Subscription, (subscription) => subscription.company)
+    subscriptions: Subscription[];
 }

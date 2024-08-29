@@ -29,7 +29,7 @@ export class ServicePricingController {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.servicePricingService.findOne(+id);
+        return this.servicePricingService.findOne(id);
     }
 
     @Patch(':id')
@@ -37,16 +37,16 @@ export class ServicePricingController {
         @Param('id') id: string,
         @Body() updateServicePricingDto: UpdateServicePricingDto,
     ) {
-        return this.servicePricingService.update(+id, updateServicePricingDto);
+        return this.servicePricingService.update(id, updateServicePricingDto);
     }
 
     @Delete(':id')
     remove(@Param('id') id: string) {
-        return this.servicePricingService.remove(+id);
+        return this.servicePricingService.remove(id);
     }
 
     @Patch(':id/undelete')
     restoreWasteService(@Param('id') id: string) {
-        return this.servicePricingService.restore(+id);
+        return this.servicePricingService.restore(id);
     }
 }
