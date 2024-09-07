@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateServicePricingDto {
     @IsNumber()
@@ -7,4 +7,11 @@ export class CreateServicePricingDto {
     @IsNumber()
     @IsOptional()
     readonly frequency: number | null;
+
+    @IsString()
+    readonly name: string;
+
+    @IsOptional()
+    @IsString()
+    readonly wasteServiceId: string;
 }
