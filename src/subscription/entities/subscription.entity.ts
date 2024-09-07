@@ -8,8 +8,6 @@ import {
     JoinColumn,
     JoinTable,
     ManyToMany,
-    ManyToOne,
-    OneToMany,
     OneToOne,
     PrimaryColumn,
 } from 'typeorm';
@@ -42,7 +40,10 @@ export class Subscription {
     @JoinColumn({ name: 'company_id' })
     company: Company;
 
-    @ManyToMany(() => ServicePricing, (pricing) => pricing.subscriptions)
+    @ManyToMany(
+        () => ServicePricing,
+        (servicePricing) => servicePricing.subscriptions,
+    )
     @JoinTable({ name: 'subscription_prices' })
     pricings: ServicePricing[];
 }

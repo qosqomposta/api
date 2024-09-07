@@ -1,7 +1,6 @@
 import { ClientType } from 'src/enums/clientType.enum';
 import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
 import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
-import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 import {
     Column,
     DeleteDateColumn,
@@ -9,14 +8,14 @@ import {
     JoinTable,
     ManyToMany,
     OneToMany,
-    OneToOne,
     PrimaryColumn,
 } from 'typeorm';
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 
 @Entity()
 export class WasteService {
     @PrimaryColumn()
-    waste_service_id: string;
+    id: string;
 
     @Column()
     name: string;

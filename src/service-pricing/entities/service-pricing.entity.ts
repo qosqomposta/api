@@ -4,7 +4,6 @@ import {
     Column,
     DeleteDateColumn,
     Entity,
-    JoinColumn,
     ManyToMany,
     ManyToOne,
     PrimaryColumn,
@@ -21,13 +20,15 @@ export class ServicePricing {
     @Column({ nullable: true })
     frequency: number;
 
+    @Column({ nullable: true })
+    name: string;
+
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
-    @ManyToOne(() => WasteService, (service) => service.pricings, {
+    @ManyToOne(() => WasteService, (wasteService) => wasteService.pricings, {
         nullable: true,
     })
-    @JoinColumn({ name: 'waste_service_id' })
     wasteService: WasteService;
 
     @ManyToMany(() => Subscription, (subscription) => subscription.pricings)

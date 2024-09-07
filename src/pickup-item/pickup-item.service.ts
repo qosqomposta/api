@@ -20,7 +20,7 @@ export class PickupItemService {
         const { wasteServices, ...createParams } = createPickupItemDto;
 
         const wasteServicesUpdate = await this.wasteServiceRepository.findBy({
-            waste_service_id: In(wasteServices),
+            id: In(wasteServices),
         });
         const newPickUpItem = this.pickupItemRepository.create({
             ...createParams,
@@ -58,7 +58,7 @@ export class PickupItemService {
         if (wasteServices) {
             const wasteServiceUpdated =
                 await this.wasteServiceRepository.findBy({
-                    waste_service_id: In(wasteServices),
+                    id: In(wasteServices),
                 });
 
             pickUpItem.wasteServices = wasteServiceUpdated;

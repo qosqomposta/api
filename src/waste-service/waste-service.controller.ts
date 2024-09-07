@@ -48,9 +48,4 @@ export class WasteServiceController {
     restoreWasteService(@Param('id') id: string) {
         return this.wasteServiceService.restore(id);
     }
-
-    @Post('/remove-pricings')
-    removePricings(@Body() removePricings: RemoveWasteServicePricings) {
-        return this.wasteServiceService.removePricings(removePricings);
-    }
 }

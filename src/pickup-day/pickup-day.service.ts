@@ -33,7 +33,7 @@ export class PickupDayService {
 
     async create(createPickupDayDto: CreatePickupDayDto): Promise<PickupDay> {
         const wasteServices = await this.wasteServiceRepository.findBy({
-            waste_service_id: In(createPickupDayDto.wasteServices ?? []),
+            id: In(createPickupDayDto.wasteServices ?? []),
         });
         const currentPlacePickups = await this.placePickUpRepository.findBy({
             placePickup_id: In(createPickupDayDto.placesPickup ?? []),
@@ -114,7 +114,7 @@ export class PickupDayService {
         if (wasteServices) {
             const updatedWasteServices =
                 await this.wasteServiceRepository.findBy({
-                    waste_service_id: In(wasteServices),
+                    id: In(wasteServices),
                 });
 
             pickupDay.wasteServices = updatedWasteServices;

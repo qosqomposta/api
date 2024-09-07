@@ -11,8 +11,6 @@ import { PickupDayService } from 'src/pickup-day/pickup-day.service';
 import { PickupItemService } from 'src/pickup-item/pickup-item.service';
 import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 import { ServicePricingService } from 'src/service-pricing/service-pricing.service';
-import { CreateWasteServiceResponse } from './waste-service.interfaces';
-import { RemoveWasteServicePricings } from './dto/remove-pricings.dto';
 
 @Injectable()
 export class WasteServiceService {
@@ -36,7 +34,7 @@ export class WasteServiceService {
 
     async create(
         createWasteServiceDto: CreateWasteServiceDto,
-    ): Promise<CreateWasteServiceResponse> {
+    ): Promise<WasteService> {
         const pickUpItems = await this.pickupItemRepository.findBy({
             pickupItem_id: In(createWasteServiceDto.pickupItems),
         });
@@ -95,16 +93,14 @@ export class WasteServiceService {
             ...createWasteServiceDto,
             pickupItems: [...pickUpItems, ...newItems],
             pickupDays: [...pickUpDays, ...newDays],
-            pricings: [...pricings, ...newServicePricings],
-            waste_service_id: randomUUID(),
+            pricings: [],
+            id: randomUUID(),
         });
 
         const createdWasteService = await this.wasteServiceRepository.save(
             newWasteService,
         );
-        return {
-            wasteService: createdWasteService,
-        };
+        return createdWasteService;
     }
 
     async findAll(): Promise<WasteService[]> {
@@ -112,14 +108,13 @@ export class WasteServiceService {
             relations: {
                 pickupDays: true,
                 pickupItems: true,
-                pricings: true,
             },
         });
     }
 
     async findOne(id: string): Promise<WasteService> {
         const wasteService = await this.wasteServiceRepository.findOne({
-            where: { waste_service_id: id },
+            where: { id: id },
         });
         if (!wasteService) {
             throw new NotFoundException(
@@ -135,7 +130,7 @@ export class WasteServiceService {
         updateWasteServiceDto: UpdateWasteServiceDto,
     ): Promise<WasteService> {
         let wasteService = await this.wasteServiceRepository.findOne({
-            where: { waste_service_id: id },
+            where: { id: id },
         });
         const { pickupItems, pickupDays, pricings, ...updatedParams } =
             updateWasteServiceDto;
@@ -159,12 +154,6 @@ export class WasteServiceService {
             wasteService.pickupItems = pickupItemsUpdated;
         }
 
-        if (pricings) {
-            const pricingsUpdated = await this.servicePricingRepository.findBy({
-                id: In(pickupItems),
-            });
-            wasteService.pricings = pricingsUpdated;
-        }
         wasteService = { ...wasteService, ...updatedParams };
 
         return this.wasteServiceRepository.save(wasteService);
@@ -172,7 +161,7 @@ export class WasteServiceService {
 
     async remove(id: string): Promise<string> {
         const wasteService = await this.wasteServiceRepository.findOne({
-            where: { waste_service_id: id },
+            where: { id: id },
         });
         if (!wasteService) {
             throw new NotFoundException(
@@ -189,7 +178,7 @@ export class WasteServiceService {
 
     async restore(id: string): Promise<WasteService> {
         const wasteService = await this.wasteServiceRepository.findOne({
-            where: { waste_service_id: id },
+            where: { id: id },
             withDeleted: true,
         });
 
@@ -205,28 +194,5 @@ export class WasteServiceService {
 
         wasteService.deletedAt = null;
         return this.wasteServiceRepository.save(wasteService);
-    }
-
-    async removePricings(
-        removePricings: RemoveWasteServicePricings,
-    ): Promise<WasteService> {
-        const { service_id: id, pricingsIds: pricingsIdsToRemove } =
-            removePricings;
-        const wasteService = await this.wasteServiceRepository.findOne({
-            where: { waste_service_id: id },
-            relations: {
-                pricings: true,
-            },
-        });
-        if (!wasteService) {
-            throw new NotFoundException(
-                `Waste Service with ID ${id} not found`,
-            );
-        }
-
-        wasteService.pricings = wasteService.pricings.filter((price) => {
-            return !pricingsIdsToRemove.includes(price.id);
-        });
-        return await this.wasteServiceRepository.save(wasteService);
     }
 }
