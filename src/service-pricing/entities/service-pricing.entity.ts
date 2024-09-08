@@ -26,6 +26,9 @@ export class ServicePricing {
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
+    @Column({ nullable: true })
+    oneTimePrice?: number;
+
     @ManyToOne(() => WasteService, (wasteService) => wasteService.pricings, {
         nullable: true,
     })

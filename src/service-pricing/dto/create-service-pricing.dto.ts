@@ -9,7 +9,12 @@ export class CreateServicePricingDto {
     readonly frequency: number | null;
 
     @IsString()
+    @IsOptional()
     readonly name: string;
+
+    @IsNumber()
+    @IsOptional()
+    readonly oneTimePrice: number;
 
     @IsOptional()
     @IsString()

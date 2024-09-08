@@ -108,6 +108,7 @@ export class WasteServiceService {
             relations: {
                 pickupDays: true,
                 pickupItems: true,
+                pricings: true,
             },
         });
     }
