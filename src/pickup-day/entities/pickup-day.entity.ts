@@ -1,6 +1,6 @@
 import { DaysOfWeek } from 'src/enums/days.enum';
 import { PlacePickup } from 'src/place-pickup/entities/place-pickup.entity';
-import { WasteService } from 'src/waste-service/entities/waste-service.entity';
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 import {
     Column,
     DeleteDateColumn,
@@ -36,6 +36,9 @@ export class PickupDay {
     @JoinTable({ name: 'pickupDays_placePickup' })
     placePickups: PlacePickup[];
 
-    @ManyToMany(() => WasteService, (wasteService) => wasteService.pickupItems)
-    wasteServices: WasteService[];
+    @ManyToMany(
+        () => ServicePricing,
+        (servicePricing) => servicePricing.pickupItems,
+    )
+    pricings: ServicePricing[];
 }

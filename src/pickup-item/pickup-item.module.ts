@@ -3,10 +3,10 @@ import { PickupItemService } from './pickup-item.service';
 import { PickupItemController } from './pickup-item.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PickupItem } from './entities/pickup-item.entity';
-import { WasteService } from 'src/waste-service/entities/waste-service.entity';
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PickupItem, WasteService])],
+    imports: [TypeOrmModule.forFeature([PickupItem, ServicePricing])],
     controllers: [PickupItemController],
     providers: [PickupItemService],
     exports: [PickupItemService],

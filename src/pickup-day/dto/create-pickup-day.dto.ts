@@ -33,7 +33,7 @@ export class CreatePickupDayDto {
     @IsOptional()
     @IsArray()
     @IsString({ each: true })
-    readonly wasteServices?: number[];
+    readonly pricings?: number[];
 
     @IsOptional()
     @IsArray()

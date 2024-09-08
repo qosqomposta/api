@@ -1,4 +1,4 @@
-import { WasteService } from 'src/waste-service/entities/waste-service.entity';
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 import {
     Column,
     DeleteDateColumn,
@@ -21,6 +21,9 @@ export class PickupItem {
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
-    @ManyToMany(() => WasteService, (wasteService) => wasteService.pickupItems)
-    wasteServices: WasteService[];
+    @ManyToMany(
+        () => ServicePricing,
+        (servicePricing) => servicePricing.pickupItems,
+    )
+    pricings: ServicePricing[];
 }

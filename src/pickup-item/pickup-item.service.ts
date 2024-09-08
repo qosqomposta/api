@@ -3,8 +3,8 @@ import { UpdatePickupItemDto } from './dto/update-pickup-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { PickupItem } from './entities/pickup-item.entity';
-import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 import { CreatePickupItemDto } from './dto/create-pickup-item.dto';
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 
 @Injectable()
 export class PickupItemService {
@@ -12,19 +12,21 @@ export class PickupItemService {
         @InjectRepository(PickupItem)
         private pickupItemRepository: Repository<PickupItem>,
 
-        @InjectRepository(WasteService)
-        private wasteServiceRepository: Repository<WasteService>,
+        @InjectRepository(ServicePricing)
+        private servicePricingsRepository: Repository<ServicePricing>,
     ) {}
 
     async create(createPickupItemDto: CreatePickupItemDto) {
         const { wasteServices, ...createParams } = createPickupItemDto;
 
-        const wasteServicesUpdate = await this.wasteServiceRepository.findBy({
-            id: In(wasteServices),
-        });
+        const wasteServicesUpdate = await this.servicePricingsRepository.findBy(
+            {
+                id: In(wasteServices),
+            },
+        );
         const newPickUpItem = this.pickupItemRepository.create({
             ...createParams,
-            wasteServices: wasteServicesUpdate,
+            pricings: wasteServicesUpdate,
         });
 
         return this.pickupItemRepository.save(newPickUpItem);
@@ -57,11 +59,11 @@ export class PickupItemService {
 
         if (wasteServices) {
             const wasteServiceUpdated =
-                await this.wasteServiceRepository.findBy({
+                await this.servicePricingsRepository.findBy({
                     id: In(wasteServices),
                 });
 
-            pickUpItem.wasteServices = wasteServiceUpdated;
+            pickUpItem.pricings = wasteServiceUpdated;
         }
 
         pickUpItem = { ...pickUpItem, ...updateParams };

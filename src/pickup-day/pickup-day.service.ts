@@ -9,11 +9,11 @@ import { UpdatePickupDayDto } from './dto/update-pickup-day.dto';
 import { PickupDay } from './entities/pickup-day.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 import { PlacePickup } from 'src/place-pickup/entities/place-pickup.entity';
 import { PlacePickupService } from 'src/place-pickup/place-pickup.service';
 import { FindDaysByIdsResponse } from './pickup-day.interfaces';
 import { FindPickUpDayByIdDto } from './dto/find-pickup-day.dto';
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 
 @Injectable()
 export class PickupDayService {
@@ -21,8 +21,8 @@ export class PickupDayService {
         @InjectRepository(PickupDay)
         private pickupDayRepository: Repository<PickupDay>,
 
-        @InjectRepository(WasteService)
-        private readonly wasteServiceRepository: Repository<WasteService>,
+        @InjectRepository(ServicePricing)
+        private readonly servicePricingRepository: Repository<ServicePricing>,
 
         @InjectRepository(PlacePickup)
         private readonly placePickUpRepository: Repository<PlacePickup>,
@@ -32,8 +32,8 @@ export class PickupDayService {
     ) {}
 
     async create(createPickupDayDto: CreatePickupDayDto): Promise<PickupDay> {
-        const wasteServices = await this.wasteServiceRepository.findBy({
-            id: In(createPickupDayDto.wasteServices ?? []),
+        const wasteServices = await this.servicePricingRepository.findBy({
+            id: In(createPickupDayDto.pricings ?? []),
         });
         const currentPlacePickups = await this.placePickUpRepository.findBy({
             placePickup_id: In(createPickupDayDto.placesPickup ?? []),
@@ -51,7 +51,7 @@ export class PickupDayService {
 
         const newPickupDay = this.pickupDayRepository.create({
             ...createPickupDayDto,
-            wasteServices: wasteServices,
+            pricings: wasteServices,
             placePickups: currentPlacePickups,
         });
 
@@ -108,16 +108,16 @@ export class PickupDayService {
             throw new NotFoundException(`Pickup Day with ID ${id} not found`);
         }
 
-        const { wasteServices, updatedPickupPlaces, ...updateParams } =
+        const { pricings, updatedPickupPlaces, ...updateParams } =
             updatePickupDayDto;
 
-        if (wasteServices) {
+        if (pricings) {
             const updatedWasteServices =
-                await this.wasteServiceRepository.findBy({
-                    id: In(wasteServices),
+                await this.servicePricingRepository.findBy({
+                    id: In(pricings),
                 });
 
-            pickupDay.wasteServices = updatedWasteServices;
+            pickupDay.pricings = updatedWasteServices;
         }
 
         if (updatedPickupPlaces) {

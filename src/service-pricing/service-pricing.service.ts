@@ -3,20 +3,71 @@ import { CreateServicePricingDto } from './dto/create-service-pricing.dto';
 import { UpdateServicePricingDto } from './dto/update-service-pricing.dto';
 import { ServicePricing } from './entities/service-pricing.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
+import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
+import { PickupItemService } from 'src/pickup-item/pickup-item.service';
+import { PickupDayService } from 'src/pickup-day/pickup-day.service';
 
 @Injectable()
 export class ServicePricingService {
     constructor(
         @InjectRepository(ServicePricing)
         private servicePricingRepository: Repository<ServicePricing>,
+
+        @InjectRepository(PickupItem)
+        private readonly pickupItemRepository: Repository<PickupItem>,
+
+        @InjectRepository(PickupDay)
+        private readonly pickupDayRepository: Repository<PickupDay>,
+
+        private readonly pickupItemService: PickupItemService,
+        private readonly pickupDayService: PickupDayService,
     ) {}
     async create(
         createServicePricingDto: CreateServicePricingDto,
     ): Promise<ServicePricing> {
+        const pickUpItems = await this.pickupItemRepository.findBy({
+            pickupItem_id: In(createServicePricingDto.pickupItems),
+        });
+
+        if (pickUpItems.length === 0) {
+            throw new NotFoundException('No pickup items found.');
+        }
+        const pickUpDays = await this.pickupDayRepository.findBy({
+            pickupDay_id: In(createServicePricingDto.pickupDays),
+        });
+
+        if (pickUpDays.length === 0) {
+            throw new NotFoundException('No pickup days found.');
+        }
+
+        const newDays: PickupDay[] = [];
+        const newItems: PickupItem[] = [];
+
+        const { newPickupDays, newPickupItems } = createServicePricingDto;
+
+        if (newPickupDays) {
+            for (const dayData of newPickupDays) {
+                const dayCreated = await this.pickupDayService.create(dayData);
+                newDays.push(dayCreated);
+            }
+        }
+
+        if (newPickupItems) {
+            for (const itemData of newPickupItems) {
+                const itemCreated = await this.pickupItemService.create(
+                    itemData,
+                );
+                newItems.push(itemCreated);
+            }
+        }
+
         const newServicePricing = this.servicePricingRepository.create({
             ...createServicePricingDto,
+            pickupItems: [...pickUpItems, ...newItems],
+            pickupDays: [...pickUpDays, ...newDays],
             id: randomUUID(),
         });
         return this.servicePricingRepository.save(newServicePricing);
@@ -46,13 +97,30 @@ export class ServicePricingService {
         let servicePricing = await this.servicePricingRepository.findOne({
             where: { id: id },
         });
+
+        const { pickupItems, pickupDays, ...updatePayload } =
+            updateServicePricingDto;
+
         if (!servicePricing) {
             throw new NotFoundException(
                 `Waste Service with ID ${id} not found`,
             );
         }
 
-        servicePricing = { ...servicePricing, ...updateServicePricingDto };
+        if (pickupDays) {
+            const pickupDaysUpdated = await this.pickupDayRepository.findBy({
+                pickupDay_id: In(pickupDays),
+            });
+            servicePricing.pickupDays = pickupDaysUpdated;
+        }
+        if (pickupItems) {
+            const pickupItemsUpdated = await this.pickupItemRepository.findBy({
+                pickupItem_id: In(pickupItems),
+            });
+            servicePricing.pickupItems = pickupItemsUpdated;
+        }
+
+        servicePricing = { ...servicePricing, ...updatePayload };
 
         return this.servicePricingRepository.save(servicePricing);
     }

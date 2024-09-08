@@ -35,18 +35,6 @@ export class WasteService {
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
-    @ManyToMany(() => PickupItem, (pickupItem) => pickupItem.wasteServices, {
-        nullable: true,
-    })
-    @JoinTable({ name: 'waste_service_items' })
-    pickupItems: PickupItem[];
-
-    @ManyToMany(() => PickupDay, (pickupItem) => pickupItem.wasteServices, {
-        nullable: true,
-    })
-    @JoinTable({ name: 'waste_service_days' })
-    pickupDays: PickupDay[];
-
     @OneToMany(() => ServicePricing, (pricing) => pricing.wasteService, {
         nullable: true,
     })

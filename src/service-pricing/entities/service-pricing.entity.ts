@@ -1,9 +1,12 @@
+import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
+import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import { Subscription } from 'src/subscription/entities/subscription.entity';
 import { WasteService } from 'src/waste-service/entities/waste-service.entity';
 import {
     Column,
     DeleteDateColumn,
     Entity,
+    JoinTable,
     ManyToMany,
     ManyToOne,
     PrimaryColumn,
@@ -36,4 +39,13 @@ export class ServicePricing {
 
     @ManyToMany(() => Subscription, (subscription) => subscription.pricings)
     subscriptions: Subscription[];
+
+    @JoinTable({ name: 'waste_service_items' })
+    pickupItems: PickupItem[];
+
+    @ManyToMany(() => PickupDay, (pickupDay) => pickupDay.pricings, {
+        nullable: true,
+    })
+    @JoinTable({ name: 'waste_service_days' })
+    pickupDays: PickupDay[];
 }
