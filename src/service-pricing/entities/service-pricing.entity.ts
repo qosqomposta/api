@@ -40,6 +40,9 @@ export class ServicePricing {
     @ManyToMany(() => Subscription, (subscription) => subscription.pricings)
     subscriptions: Subscription[];
 
+    @ManyToMany(() => PickupItem, (pickupItem) => pickupItem.pricings, {
+        nullable: true,
+    })
     @JoinTable({ name: 'waste_service_items' })
     pickupItems: PickupItem[];
 
