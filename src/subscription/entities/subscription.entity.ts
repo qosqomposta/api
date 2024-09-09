@@ -44,6 +44,6 @@ export class Subscription {
         () => ServicePricing,
         (servicePricing) => servicePricing.subscriptions,
     )
-    @JoinTable({ name: 'subscription_prices' })
+    @JoinTable({ name: 'subscription_services' })
     pricings: ServicePricing[];
 }
