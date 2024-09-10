@@ -1,4 +1,5 @@
 import { Company } from 'src/company/entities/company.entity';
+import { SUBSCRIPTION_STATUS } from 'src/enums/subscription.enum';
 import { Family } from 'src/family/entities/family.entity';
 import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
 import {
@@ -23,7 +24,7 @@ export class Subscription {
     @Column({ nullable: true, type: 'datetime' })
     endDate: Date;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, enum: SUBSCRIPTION_STATUS })
     status: string;
 
     @Column({ nullable: true })

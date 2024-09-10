@@ -5,7 +5,7 @@ import {
     IsOptional,
     IsString,
 } from 'class-validator';
-import { SubscriptionStatus } from 'src/enums/subscription.enum';
+import { SUBSCRIPTION_STATUS } from 'src/enums/subscription.enum';
 
 export class CreateSubscriptionDto {
     @IsDate()
@@ -18,9 +18,9 @@ export class CreateSubscriptionDto {
     @IsString()
     familyId?: string;
 
-    @IsEnum(SubscriptionStatus)
+    @IsEnum(SUBSCRIPTION_STATUS)
     @IsNotEmpty()
-    status: SubscriptionStatus;
+    status: SUBSCRIPTION_STATUS;
 
     @IsOptional()
     baldes: number;
