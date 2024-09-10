@@ -20,14 +20,14 @@ export class Subscription {
     @Column({ nullable: true, type: 'datetime' })
     startDate: Date;
 
-    @Column({ nullable: true })
-    clientType: string;
-
     @Column({ nullable: true, type: 'datetime' })
     endDate: Date;
 
     @Column({ nullable: true })
     status: string;
+
+    @Column({ nullable: true })
+    baldes: number;
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
