@@ -17,8 +17,13 @@ export class CreateWasteServiceDto {
 
     @IsOptional()
     @IsBoolean()
+    readonly isDeliverable: boolean;
+
+    @IsOptional()
+    @IsBoolean()
     readonly isDefault: boolean;
 
+    @IsOptional()
     @IsEnum(ClientType)
     readonly clientType: string;
 }

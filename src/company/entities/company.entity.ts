@@ -4,6 +4,7 @@ import {
     DeleteDateColumn,
     Entity,
     OneToMany,
+    OneToOne,
     PrimaryColumn,
 } from 'typeorm';
 
@@ -39,6 +40,6 @@ export class Company {
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
-    @OneToMany(() => Subscription, (subscription) => subscription.company)
-    subscriptions: Subscription[];
+    @OneToOne(() => Subscription, (subscription) => subscription.company)
+    subscription: Subscription;
 }

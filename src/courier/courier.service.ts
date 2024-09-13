@@ -13,11 +13,11 @@ export class CourierService {
         private readonly courierRepository: Repository<Courier>,
     ) {}
     async create(createCourierDto: CreateCourierDto): Promise<Courier> {
-        const newCourier = this.courierRepository.create(createCourierDto);
-        return await this.courierRepository.save({
-            ...newCourier,
-            courier_id: randomUUID(),
+        const newCourier = this.courierRepository.create({
+            ...createCourierDto,
+            id: randomUUID(),
         });
+        return await this.courierRepository.save(newCourier);
     }
 
     async findAll(): Promise<Courier[]> {

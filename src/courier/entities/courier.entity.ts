@@ -8,22 +8,22 @@ export class Courier {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     last_name: string;
 
-    @Column()
+    @Column({ nullable: true })
     mother_last_name: string;
 
-    @Column()
+    @Column({ nullable: true })
     document_identity: number;
 
-    @Column()
+    @Column({ nullable: true })
     email: string;
 
-    @Column()
+    @Column({ nullable: true })
     phoneNumber: string;
 
-    @Column()
+    @Column({ nullable: true })
     address: string;
 
     @Column({ nullable: true })

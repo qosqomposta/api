@@ -1,4 +1,5 @@
 import { Company } from 'src/company/entities/company.entity';
+import { DeliveryOrder } from 'src/delivery-order/entities/delivery-order.entity';
 import { SUBSCRIPTION_STATUS } from 'src/enums/subscription.enum';
 import { Family } from 'src/family/entities/family.entity';
 import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
@@ -9,6 +10,7 @@ import {
     JoinColumn,
     JoinTable,
     ManyToMany,
+    OneToMany,
     OneToOne,
     PrimaryColumn,
 } from 'typeorm';
@@ -33,18 +35,35 @@ export class Subscription {
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
 
-    @OneToOne(() => Family, (family) => family.subscriptions)
+    @OneToOne(() => Family, (family) => family.subscription, {
+        nullable: true,
+    })
     @JoinColumn({ name: 'family_id' })
     family: Family;
 
-    @OneToOne(() => Company, (company) => company.subscriptions)
+    @OneToOne(() => Company, (company) => company.subscription, {
+        nullable: true,
+    })
     @JoinColumn({ name: 'company_id' })
     company: Company;
 
     @ManyToMany(
         () => ServicePricing,
         (servicePricing) => servicePricing.subscriptions,
+        {
+            onDelete: 'CASCADE',
+        },
     )
     @JoinTable({ name: 'subscription_services' })
     pricings: ServicePricing[];
+
+    @OneToMany(
+        () => DeliveryOrder,
+        (deliveryOrder) => deliveryOrder.subscription,
+        {
+            nullable: true,
+            onDelete: 'CASCADE',
+        },
+    )
+    deliver_orders: DeliveryOrder[];
 }

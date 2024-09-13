@@ -36,5 +36,5 @@ export class Family {
     customers: Customer[];
 
     @OneToOne(() => Subscription, (subscription) => subscription.family)
-    subscriptions: Subscription[];
+    subscription: Subscription;
 }

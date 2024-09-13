@@ -29,17 +29,17 @@ export class ServicePricingService {
         createServicePricingDto: CreateServicePricingDto,
     ): Promise<ServicePricing> {
         const pickUpItems = await this.pickupItemRepository.findBy({
-            pickupItem_id: In(createServicePricingDto.pickupItems),
+            pickupItem_id: In(createServicePricingDto.pickupItems ?? []),
         });
 
-        if (pickUpItems.length === 0) {
+        if (pickUpItems.length === 0 && createServicePricingDto.pickupItems) {
             throw new NotFoundException('No pickup items found.');
         }
         const pickUpDays = await this.pickupDayRepository.findBy({
-            pickupDay_id: In(createServicePricingDto.pickupDays),
+            pickupDay_id: In(createServicePricingDto.pickupDays ?? []),
         });
 
-        if (pickUpDays.length === 0) {
+        if (pickUpDays.length === 0 && createServicePricingDto.pickupDays) {
             throw new NotFoundException('No pickup days found.');
         }
 

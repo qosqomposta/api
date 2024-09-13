@@ -26,6 +26,9 @@ export class WasteService {
     @Column({ nullable: true })
     isDefault: boolean;
 
+    @Column({ nullable: true })
+    isDeliverable: boolean;
+
     @Column({
         nullable: true,
         enum: ClientType,
