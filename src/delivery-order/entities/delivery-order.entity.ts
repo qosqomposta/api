@@ -1,3 +1,4 @@
+import { Courier } from 'src/courier/entities/courier.entity';
 import { Subscription } from 'src/subscription/entities/subscription.entity';
 import {
     Column,
@@ -14,7 +15,7 @@ export class DeliveryOrder {
     id: string;
 
     @Column()
-    dateReceived: Date;
+    date_received: Date;
 
     @Column()
     waste_weight: number;
@@ -34,4 +35,8 @@ export class DeliveryOrder {
     )
     @JoinColumn({ name: 'subscription_id' })
     subscription: Subscription;
+
+    @ManyToOne(() => Courier, (courier) => courier.deliver_orders)
+    @JoinColumn({ name: 'courier_id' })
+    courier: Courier;
 }

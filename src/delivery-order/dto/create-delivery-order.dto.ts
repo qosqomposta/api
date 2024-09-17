@@ -2,7 +2,7 @@ import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateDeliveryOrderDto {
     @IsDate()
-    dateReceived: Date;
+    date_received: Date;
 
     @IsNumber()
     waste_weight: number;
@@ -13,4 +13,10 @@ export class CreateDeliveryOrderDto {
 
     @IsString()
     note: string;
+
+    @IsString()
+    subscription_id: string;
+
+    @IsString()
+    courier_id: string;
 }

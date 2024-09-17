@@ -1,4 +1,11 @@
-import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { DeliveryOrder } from 'src/delivery-order/entities/delivery-order.entity';
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryColumn,
+} from 'typeorm';
 
 @Entity()
 export class Courier {
@@ -31,4 +38,13 @@ export class Courier {
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
     deletedAt?: Date;
+
+    @OneToMany(
+        () => DeliveryOrder,
+        (deliveryOrder) => deliveryOrder.subscription,
+        {
+            nullable: true,
+        },
+    )
+    deliver_orders: DeliveryOrder[];
 }
