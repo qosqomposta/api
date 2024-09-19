@@ -29,10 +29,15 @@ export class FamilyService {
         return await this.familyRepository.find();
     }
 
-    async findOne(id: string) {
-        return await this.familyRepository.findOneBy({
+    async findOne(id: string): Promise<Family> {
+        const family = await this.familyRepository.findOneBy({
             family_id: id,
         });
+
+        if (!family) {
+            throw new NotFoundException(`Family with id ${id} not found`);
+        }
+        return family;
     }
 
     async update(id: string, updateFamilyDto: UpdateFamilyDto) {

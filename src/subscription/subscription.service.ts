@@ -5,12 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Subscription } from './entities/subscription.entity';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { FindSubscriptionByFamilyIdDto } from './dto/find-by-family-.dto';
+import { FamilyService } from 'src/family/family.service';
 
 @Injectable()
 export class SubscriptionService {
     constructor(
         @InjectRepository(Subscription)
         private readonly subscriptionRepository: Repository<Subscription>,
+        private readonly familyService: FamilyService,
     ) {}
     async create(
         createSubscriptionDto: CreateSubscriptionDto,
@@ -32,6 +35,25 @@ export class SubscriptionService {
         });
         if (!subscription) {
             throw new NotFoundException(`Subscription with id ${id} not found`);
+        }
+        return subscription;
+    }
+
+    async findByFamilyId(
+        payload: FindSubscriptionByFamilyIdDto,
+    ): Promise<Subscription> {
+        const family = await this.familyService.findOne(payload.family_id);
+
+        const subscription = this.subscriptionRepository.findOne({
+            where: {
+                family: family,
+            },
+        });
+
+        if (!subscription) {
+            throw new NotFoundException(
+                `Subscription for family ${family.family_id} not found`,
+            );
         }
         return subscription;
     }
