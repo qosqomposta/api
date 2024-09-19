@@ -17,7 +17,7 @@ export class DeliveryOrder {
     @Column()
     date_received: Date;
 
-    @Column()
+    @Column('float', { precision: 6, scale: 2 })
     waste_weight: number;
 
     @Column({ nullable: true })

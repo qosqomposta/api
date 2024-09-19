@@ -20,6 +20,16 @@ export class CustomerController {
         return this.customerService.create(createCustomerDto);
     }
 
+    @Get('firebase/:firebaseUuid')
+    findCustomerByFirebaseUuid(@Param('firebaseUuid') firebaseUuid: string) {
+        return this.customerService.findCustomerByFirebaseUid(firebaseUuid);
+    }
+
+    @Get('family/:firebaseUuid')
+    findFamilyDetails(@Param('firebaseUuid') firebaseUuid: string) {
+        return this.customerService.findFamilyDetails(firebaseUuid);
+    }
+
     @Get()
     findAll() {
         return this.customerService.findAll();

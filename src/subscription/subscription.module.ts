@@ -9,5 +9,6 @@ import { FamilyModule } from 'src/family/family.module';
     imports: [TypeOrmModule.forFeature([Subscription]), FamilyModule],
     controllers: [SubscriptionController],
     providers: [SubscriptionService],
+    exports: [SubscriptionService],
 })
 export class SubscriptionModule {}

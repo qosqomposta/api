@@ -37,6 +37,35 @@ export class CustomerService {
         return customer;
     }
 
+    async findCustomerByFirebaseUid(firebaseUid: string): Promise<Customer> {
+        const customer = await this.customerRepository.findOneBy({
+            firebaseUid: firebaseUid,
+        });
+
+        if (!customer) {
+            throw new NotFoundException(
+                `Customer with firebase uid ${firebaseUid} not found`,
+            );
+        }
+        return customer;
+    }
+
+    async findFamilyDetails(firebaseUid: string): Promise<Customer> {
+        const customer = await this.customerRepository.findOne({
+            where: {
+                firebaseUid: firebaseUid,
+            },
+            relations: ['family'],
+        });
+
+        if (!customer) {
+            throw new NotFoundException(
+                `Customer with firebase uid ${firebaseUid} not found`,
+            );
+        }
+        return customer;
+    }
+
     async update(
         id: string,
         updateCustomerDto: UpdateCustomerDto,

@@ -30,6 +30,11 @@ export class DeliveryOrderController {
         return this.deliveryOrderService.findOne(id);
     }
 
+    @Get('/waste-weight/:id')
+    totalWasteWeightBySubscription(@Param('id') id: string) {
+        return this.deliveryOrderService.totalWasteWeightBySubscription(id);
+    }
+
     @Patch(':id')
     update(
         @Param('id') id: string,

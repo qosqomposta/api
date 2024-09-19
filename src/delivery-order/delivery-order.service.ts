@@ -5,12 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeliveryOrder } from './entities/delivery-order.entity';
 import { randomUUID } from 'crypto';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Injectable()
 export class DeliveryOrderService {
     constructor(
         @InjectRepository(DeliveryOrder)
         private readonly deliveryOrderRepository: Repository<DeliveryOrder>,
+        private readonly subscriptionService: SubscriptionService,
     ) {}
 
     async create(
@@ -38,6 +40,30 @@ export class DeliveryOrderService {
             );
         }
         return deliveryOrder;
+    }
+
+    async totalWasteWeightBySubscription(
+        subscription_id: string,
+    ): Promise<number> {
+        const subscription = await this.subscriptionService.findOne(
+            subscription_id,
+        );
+        if (!subscription) {
+            throw new NotFoundException('Subscription not found');
+        }
+
+        const deliveryOrder = await this.deliveryOrderRepository.find({
+            where: {
+                subscription: { id: subscription_id },
+            },
+        });
+
+        console.log(deliveryOrder);
+        return Number(
+            deliveryOrder
+                .reduce((sum, item) => sum + Number(item.waste_weight), 0)
+                .toPrecision(6),
+        );
     }
 
     async update(
