@@ -75,9 +75,6 @@ export class DeliveryOrderService {
             ),
         );
 
-        console.log(totalBaldesWeight);
-        console.log(subscription);
-
         totalNeto = totalWeight - totalBaldesWeight;
 
         return {
