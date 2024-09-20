@@ -27,12 +27,18 @@ export class WasteServiceService {
         return createdWasteService;
     }
 
-    async findAll(): Promise<WasteService[]> {
-        return this.wasteServiceRepository.find({
-            relations: {
-                pricings: true,
-            },
-        });
+    async findAll(filters: { clientType?: string }): Promise<WasteService[]> {
+        const query = this.wasteServiceRepository
+            .createQueryBuilder('wasteService')
+            .leftJoinAndSelect('wasteService.pricings', 'pricings');
+
+        if (filters.clientType) {
+            query.andWhere('wasteService.clientType = :clientType', {
+                clientType: filters.clientType,
+            });
+        }
+
+        return query.getMany();
     }
 
     async findOne(id: string): Promise<WasteService> {

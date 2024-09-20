@@ -8,5 +8,6 @@ import { WasteService } from './entities/waste-service.entity';
     imports: [TypeOrmModule.forFeature([WasteService])],
     controllers: [WasteServiceController],
     providers: [WasteServiceService],
+    exports: [WasteServiceService],
 })
 export class WasteServiceModule {}

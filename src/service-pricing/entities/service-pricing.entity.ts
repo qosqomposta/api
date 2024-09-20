@@ -6,6 +6,7 @@ import {
     Column,
     DeleteDateColumn,
     Entity,
+    JoinColumn,
     JoinTable,
     ManyToMany,
     ManyToOne,
@@ -32,9 +33,13 @@ export class ServicePricing {
     @Column({ nullable: true })
     oneTimePrice?: number;
 
+    @Column({ nullable: true })
+    isAddon?: number;
+
     @ManyToOne(() => WasteService, (wasteService) => wasteService.pricings, {
         nullable: true,
     })
+    @JoinColumn()
     wasteService: WasteService;
 
     @ManyToMany(() => Subscription, (subscription) => subscription.pricings)

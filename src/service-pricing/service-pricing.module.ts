@@ -7,12 +7,14 @@ import { PickupItemModule } from 'src/pickup-item/pickup-item.module';
 import { PickupDayModule } from 'src/pickup-day/pickup-day.module';
 import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
+import { WasteServiceModule } from 'src/waste-service/waste-service.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ServicePricing, PickupItem, PickupDay]),
         PickupItemModule,
         PickupDayModule,
+        WasteServiceModule,
     ],
     controllers: [ServicePricingController],
     providers: [ServicePricingService],

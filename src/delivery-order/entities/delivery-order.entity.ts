@@ -42,4 +42,7 @@ export class DeliveryOrder {
     @ManyToOne(() => Courier, (courier) => courier.deliver_orders)
     @JoinColumn({ name: 'courier_id' })
     courier: Courier;
+
+    @Column({ nullable: true })
+    isGathering: boolean;
 }

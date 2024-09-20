@@ -1,12 +1,8 @@
 import { ClientType } from 'src/enums/clientType.enum';
-import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
-import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import {
     Column,
     DeleteDateColumn,
     Entity,
-    JoinTable,
-    ManyToMany,
     OneToMany,
     PrimaryColumn,
 } from 'typeorm';

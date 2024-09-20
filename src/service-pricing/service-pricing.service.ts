@@ -9,6 +9,7 @@ import { PickupDay } from 'src/pickup-day/entities/pickup-day.entity';
 import { PickupItem } from 'src/pickup-item/entities/pickup-item.entity';
 import { PickupItemService } from 'src/pickup-item/pickup-item.service';
 import { PickupDayService } from 'src/pickup-day/pickup-day.service';
+import { WasteServiceService } from 'src/waste-service/waste-service.service';
 
 @Injectable()
 export class ServicePricingService {
@@ -24,6 +25,7 @@ export class ServicePricingService {
 
         private readonly pickupItemService: PickupItemService,
         private readonly pickupDayService: PickupDayService,
+        private readonly wasteServiceService: WasteServiceService,
     ) {}
     async create(
         createServicePricingDto: CreateServicePricingDto,
@@ -46,7 +48,8 @@ export class ServicePricingService {
         const newDays: PickupDay[] = [];
         const newItems: PickupItem[] = [];
 
-        const { newPickupDays, newPickupItems } = createServicePricingDto;
+        const { newPickupDays, newPickupItems, wasteServiceId } =
+            createServicePricingDto;
 
         if (newPickupDays) {
             for (const dayData of newPickupDays) {
@@ -64,8 +67,17 @@ export class ServicePricingService {
             }
         }
 
+        const wasteService = await this.wasteServiceService.findOne(
+            wasteServiceId,
+        );
+        if (!wasteService) {
+            throw new NotFoundException(
+                `Waste service with ${wasteServiceId} not found`,
+            );
+        }
         const newServicePricing = this.servicePricingRepository.create({
             ...createServicePricingDto,
+            wasteService: wasteService,
             pickupItems: [...pickUpItems, ...newItems],
             pickupDays: [...pickUpDays, ...newDays],
             id: randomUUID(),
@@ -74,7 +86,20 @@ export class ServicePricingService {
     }
 
     async findAll(): Promise<ServicePricing[]> {
-        return this.servicePricingRepository.find() ?? [];
+        return (
+            this.servicePricingRepository.find({
+                loadRelationIds: {
+                    relations: ['wasteService'],
+                },
+            }) ?? []
+        );
+    }
+
+    //Add Guard Here
+    async findPricingsWithSubscriptions(): Promise<ServicePricing[]> {
+        return (
+            this.servicePricingRepository.find({ loadRelationIds: true }) ?? []
+        );
     }
 
     async findOne(id: string): Promise<ServicePricing> {

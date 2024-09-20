@@ -3,7 +3,6 @@ import {
     Column,
     DeleteDateColumn,
     Entity,
-    OneToMany,
     OneToOne,
     PrimaryColumn,
 } from 'typeorm';
@@ -16,11 +15,11 @@ export class Company {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     ruc: number;
 
-    @Column()
-    phone: string;
+    @Column({ nullable: true })
+    phoneNumber: string;
 
     @Column({ nullable: true })
     description: string;
@@ -30,6 +29,9 @@ export class Company {
 
     @Column({ nullable: true })
     address: string;
+
+    @Column({ nullable: true })
+    reference: string;
 
     @Column({ nullable: true })
     email: string;
@@ -42,4 +44,10 @@ export class Company {
 
     @OneToOne(() => Subscription, (subscription) => subscription.company)
     subscription: Subscription;
+
+    @Column({ nullable: true })
+    isActive: boolean;
+
+    @Column({ nullable: true })
+    customId: string;
 }

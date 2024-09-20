@@ -6,11 +6,12 @@ import {
     Patch,
     Param,
     Delete,
+    Query,
 } from '@nestjs/common';
 import { WasteServiceService } from './waste-service.service';
 import { CreateWasteServiceDto } from './dto/create-waste-service.dto';
 import { UpdateWasteServiceDto } from './dto/update-waste-service.dto';
-import { RemoveWasteServicePricings } from './dto/remove-pricings.dto';
+import { FindAllWasteServicesDto } from './dto/find-all-filter.dto';
 
 @Controller('waste-service')
 export class WasteServiceController {
@@ -22,8 +23,8 @@ export class WasteServiceController {
     }
 
     @Get()
-    findAll() {
-        return this.wasteServiceService.findAll();
+    findAll(@Query() filters: FindAllWasteServicesDto) {
+        return this.wasteServiceService.findAll(filters);
     }
 
     @Get(':id')
