@@ -44,7 +44,7 @@ export class DeliveryOrderService {
 
     async totalWasteWeightBySubscription(
         subscription_id: string,
-    ): Promise<number> {
+    ): Promise<Record<string, number>> {
         const subscription = await this.subscriptionService.findOne(
             subscription_id,
         );
@@ -58,12 +58,29 @@ export class DeliveryOrderService {
             },
         });
 
-        console.log(deliveryOrder);
-        return Number(
+        let totalWeight = 0;
+        let totalNeto = 0;
+        let totalBaldesWeight = 0;
+
+        totalWeight = Number(
             deliveryOrder
                 .reduce((sum, item) => sum + Number(item.waste_weight), 0)
                 .toPrecision(6),
         );
+
+        totalBaldesWeight = Number(
+            deliveryOrder.reduce(
+                (sum, item) => sum + Number(item.peso_balde),
+                0,
+            ),
+        );
+
+        totalNeto = totalWeight - totalBaldesWeight;
+
+        return {
+            totalWeight: totalWeight,
+            totalNeto: totalNeto,
+        };
     }
 
     async update(
