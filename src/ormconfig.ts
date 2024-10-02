@@ -1,9 +1,11 @@
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-export const typeOrmConfig: TypeOrmModuleOptions = {
+export const typeOrmConfig = (
+    configService: ConfigService,
+): TypeOrmModuleOptions => ({
     type: 'sqlite',
-    database: '../../qosqompostaDB.db',
-    // entities: [__dirname + '../**/*.entity{.ts,.js}'],
+    database: configService.get<string>('DATABASE_URL'),
     autoLoadEntities: true,
-    //Remove in production
-    synchronize: true,
-};
+    synchronize: configService.get<string>('NODE_ENV') !== 'production',
+    logging: configService.get<string>('NODE_ENV') === 'development',
+});

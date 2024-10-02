@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerModule } from './customer/customer.module';
 import { typeOrmConfig } from './ormconfig';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DistrictModule } from './district/district.module';
 import configuration from './config/configuration';
 import { PickupItemModule } from './pickup-item/pickup-item.module';
@@ -28,7 +28,11 @@ import { SummaryClientService } from './summary-client/summary-client.service';
             envFilePath: `.env.${process.env.NODE_ENV}`,
             load: [configuration],
         }),
-        TypeOrmModule.forRoot(typeOrmConfig),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: typeOrmConfig,
+            inject: [ConfigService],
+        }),
         CustomerModule,
         DistrictModule,
         PickupItemModule,
