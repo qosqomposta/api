@@ -12,4 +12,8 @@ export const typeOrmConfig = (
     synchronize: configService.get<string>('NODE_ENV') !== 'production',
     logging: configService.get<string>('NODE_ENV') === 'development',
     flags: 0x00000040,
+    extra: {
+        poolSize: 1,
+    },
+    keepConnectionAlive: false,
 });
