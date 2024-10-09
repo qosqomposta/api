@@ -31,7 +31,7 @@ export class WasteService {
     })
     clientType: string;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 
     @OneToMany(() => ServicePricing, (pricing) => pricing.wasteService, {

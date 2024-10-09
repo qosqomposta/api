@@ -26,7 +26,7 @@ export class Family {
     @Column()
     isActive: boolean;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 
     @Column({ nullable: true })

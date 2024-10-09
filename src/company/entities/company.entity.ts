@@ -39,7 +39,7 @@ export class Company {
     @Column({ nullable: true })
     owner_name: string;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 
     @OneToOne(() => Subscription, (subscription) => subscription.company)

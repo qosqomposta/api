@@ -20,10 +20,10 @@ export class Subscription {
     @PrimaryColumn({ unique: true })
     id: string;
 
-    @Column({ nullable: true, type: 'datetime' })
+    @Column({ nullable: true, type: 'timestamp' })
     startDate: Date;
 
-    @Column({ nullable: true, type: 'datetime' })
+    @Column({ nullable: true, type: 'timestamp' })
     endDate: Date;
 
     @Column({ nullable: true, enum: SUBSCRIPTION_STATUS })
@@ -32,7 +32,7 @@ export class Subscription {
     @Column({ nullable: true })
     baldes: number;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 
     @OneToOne(() => Family, (family) => family.subscription, {

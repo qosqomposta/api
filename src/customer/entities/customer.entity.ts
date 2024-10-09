@@ -37,7 +37,7 @@ export class Customer {
     @Column({ nullable: true })
     customId: string;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 
     @ManyToOne(() => Family, (family) => family.customers)

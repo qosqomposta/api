@@ -3,8 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerModule } from './customer/customer.module';
-import { typeOrmConfig } from './ormconfig';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { DistrictModule } from './district/district.module';
 import configuration from './config/configuration';
 import { PickupItemModule } from './pickup-item/pickup-item.module';
@@ -20,6 +19,7 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { DeliveryOrderModule } from './delivery-order/delivery-order.module';
 import { SummaryClientService } from './summary-client/summary-client.service';
+import { configPostgresql } from './config/orm.config';
 
 @Module({
     imports: [
@@ -29,9 +29,7 @@ import { SummaryClientService } from './summary-client/summary-client.service';
             load: [configuration],
         }),
         TypeOrmModule.forRootAsync({
-            imports: [ConfigModule],
-            useFactory: typeOrmConfig,
-            inject: [ConfigService],
+            useFactory: configPostgresql,
         }),
         CustomerModule,
         DistrictModule,

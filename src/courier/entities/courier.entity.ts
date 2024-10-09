@@ -36,7 +36,7 @@ export class Courier {
     @Column({ nullable: true })
     refAddress: string;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 
     @OneToMany(

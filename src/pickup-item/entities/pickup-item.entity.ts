@@ -18,7 +18,7 @@ export class PickupItem {
     @Column({ nullable: true })
     description: string;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 
     @ManyToMany(

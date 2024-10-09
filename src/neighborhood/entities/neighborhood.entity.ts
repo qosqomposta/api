@@ -11,6 +11,6 @@ export class Neighborhood {
     @Column({ nullable: true })
     isActive: boolean;
 
-    @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
     deletedAt?: Date;
 }
