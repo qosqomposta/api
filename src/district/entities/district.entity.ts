@@ -13,7 +13,7 @@ export class District {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     postalCode: string;
 
     @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
