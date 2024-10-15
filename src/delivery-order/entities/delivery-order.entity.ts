@@ -17,13 +17,13 @@ export class DeliveryOrder {
     @Column()
     date_received: Date;
 
-    @Column('float', { precision: 6, scale: 2 })
+    @Column('numeric', { precision: 6, scale: 2, nullable: true })
     waste_weight: number;
 
     @Column({ nullable: true })
     compost: number;
 
-    @Column('float', { precision: 6, scale: 2, nullable: true, default: 0.8 })
+    @Column('numeric', { precision: 6, scale: 2, nullable: true, default: 0.8 })
     peso_balde: number;
 
     @Column({ nullable: true })
