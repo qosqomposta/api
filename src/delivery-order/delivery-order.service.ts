@@ -21,6 +21,7 @@ export class DeliveryOrderService {
     ): Promise<DeliveryOrder> {
         const newDeliveryOrder = this.deliveryOrderRepository.create({
             ...createDeliveryOrderDto,
+            peso_balde: 0.8,
             id: randomUUID(),
         });
         return await this.deliveryOrderRepository.save(newDeliveryOrder);

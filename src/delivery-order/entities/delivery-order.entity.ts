@@ -23,7 +23,10 @@ export class DeliveryOrder {
     @Column({ nullable: true })
     compost: number;
 
-    @Column('numeric', { precision: 6, scale: 2, nullable: true, default: 0.8 })
+    @Column('numeric', {
+        precision: 6,
+        scale: 2,
+    })
     peso_balde: number;
 
     @Column({ nullable: true })
