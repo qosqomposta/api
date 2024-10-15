@@ -36,6 +36,13 @@ export class SubscriptionController {
         return this.subscriptionService.findByFamilyId(findByFamilyDto);
     }
 
+    @Post('/family/summary')
+    findSummaryByFamilyId(
+        @Body() findByFamilyDto: FindSubscriptionByFamilyIdDto,
+    ) {
+        return this.subscriptionService.findSummaryByFamilyId(findByFamilyDto);
+    }
+
     @Patch(':id')
     update(
         @Param('id') id: string,

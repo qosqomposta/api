@@ -44,7 +44,7 @@ export class SubscriptionService {
     ): Promise<Subscription> {
         const family = await this.familyService.findOne(payload.family_id);
 
-        const subscription = this.subscriptionRepository.findOne({
+        const subscription = await this.subscriptionRepository.findOne({
             where: {
                 family: family,
             },
@@ -56,6 +56,36 @@ export class SubscriptionService {
             );
         }
         return subscription;
+    }
+
+    async findSummaryByFamilyId(
+        payload: FindSubscriptionByFamilyIdDto,
+    ): Promise<Record<string, unknown>> {
+        const family = await this.familyService.findOne(payload.family_id);
+
+        const subscriptions = await this.subscriptionRepository.find({
+            where: {
+                family: family,
+            },
+            relations: ['pricings'],
+        });
+
+        if (!subscriptions) {
+            throw new NotFoundException(
+                `Subscriptions for family ${family.family_id} not found`,
+            );
+        }
+
+        const subscriptionsSummary = subscriptions.map((value) => {
+            return {
+                startDate: value.startDate,
+            };
+        });
+
+        console.log(subscriptions);
+        return {
+            startDate: 'hola',
+        };
     }
 
     async update(

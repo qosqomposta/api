@@ -9,7 +9,7 @@ export const configPostgresql = (): TypeOrmModuleOptions => ({
     database: process.env.POSTGRES_DB,
     logging: process.env.NODE_ENV === 'development',
     entities: ['dist/**/*.entity{.ts,.js}'],
-    migrations: ['dist/migrations/*{.ts,.js}'],
+    migrations: ['dist/db/migrations/*{.ts,.js}'],
     synchronize: false,
     ssl: process.env.NODE_ENV === 'production' ? true : false,
 });

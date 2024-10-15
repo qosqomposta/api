@@ -21,6 +21,9 @@ export class ServicePricing {
     @Column()
     price: number;
 
+    @Column({ default: false, nullable: true })
+    isComposable: boolean;
+
     @Column({ nullable: true })
     frequency: number;
 

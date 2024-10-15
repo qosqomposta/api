@@ -12,7 +12,7 @@ export class PlacePickup {
     @PrimaryGeneratedColumn()
     placePickup_id: number;
 
-    @Column()
+    @Column({ nullable: true })
     name: string;
 
     @Column({ nullable: true })

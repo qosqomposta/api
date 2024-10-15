@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { FamilyCustomerSummaryDto } from './dto/summary.dto';
 
 @Injectable()
 export class CustomerService {
@@ -112,5 +113,20 @@ export class CustomerService {
 
         customer.deletedAt = null;
         return await this.customerRepository.save(customer);
+    }
+
+    async getFamilyCustomerSummary(firebaseUid: string): Promise<any> {
+        const customerSummary = await this.customerRepository.findOne({
+            where: {
+                firebaseUid: firebaseUid,
+            },
+            relations: ['family', 'family.subscription'],
+        });
+
+        if (!customerSummary) {
+            throw new NotFoundException(
+                `Customer with id ${firebaseUid} not found`,
+            );
+        }
     }
 }

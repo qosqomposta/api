@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    Query,
 } from '@nestjs/common';
 import { DeliveryOrderService } from './delivery-order.service';
 import { CreateDeliveryOrderDto } from './dto/create-delivery-order.dto';
@@ -31,8 +32,14 @@ export class DeliveryOrderController {
     }
 
     @Get('/waste-weight/:id')
-    totalWasteWeightBySubscription(@Param('id') id: string) {
-        return this.deliveryOrderService.totalWasteWeightBySubscription(id);
+    totalWasteWeightBySubscription(
+        @Param('id') id: string,
+        @Query('year') year?: number,
+    ) {
+        return this.deliveryOrderService.totalWasteWeightBySubscription(
+            id,
+            year,
+        );
     }
 
     @Patch(':id')

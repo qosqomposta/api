@@ -18,7 +18,6 @@ import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { DeliveryOrderModule } from './delivery-order/delivery-order.module';
-import { SummaryClientService } from './summary-client/summary-client.service';
 import { configPostgresql } from './config/orm.config';
 
 @Module({
@@ -47,6 +46,6 @@ import { configPostgresql } from './config/orm.config';
         DeliveryOrderModule,
     ],
     controllers: [AppController],
-    providers: [AppService, SummaryClientService],
+    providers: [AppService],
 })
 export class AppModule {}

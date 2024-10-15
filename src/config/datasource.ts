@@ -5,8 +5,6 @@ configDotenv({
     path: `.env.${process.env.NODE_ENV || ''}`,
 });
 
-console.log(process.env.POSTGRES_PASSWORD);
-
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: process.env.POSTGRES_HOST,
@@ -15,7 +13,7 @@ export const AppDataSource = new DataSource({
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
     logging: process.env.NODE_ENV === 'development',
-    entities: ['src/**/*.entity{.ts,.js}'],
-    migrations: ['src/migrations/*{.ts,.js}'],
+    entities: ['dist/**/*.entity{.ts,.js}'],
+    migrations: ['src/db/migrations/*{.ts,.js}'],
     synchronize: false,
 });

@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { DeliveryOrder } from './entities/delivery-order.entity';
 import { randomUUID } from 'crypto';
 import { SubscriptionService } from 'src/subscription/subscription.service';
+import { SummaryWeightsDto } from './dto/total-waste-weight.dto';
 
 @Injectable()
 export class DeliveryOrderService {
@@ -44,7 +45,8 @@ export class DeliveryOrderService {
 
     async totalWasteWeightBySubscription(
         subscription_id: string,
-    ): Promise<Record<string, number>> {
+        year: number,
+    ): Promise<SummaryWeightsDto> {
         const subscription = await this.subscriptionService.findOne(
             subscription_id,
         );
@@ -61,11 +63,21 @@ export class DeliveryOrderService {
         let totalWeight = 0;
         let totalNeto = 0;
         let totalBaldesWeight = 0;
+        let totalWeightPerYear = 0;
 
         totalWeight = Number(
             deliveryOrder
                 .reduce((sum, item) => sum + Number(item.waste_weight), 0)
                 .toPrecision(6),
+        );
+
+        totalWeightPerYear = Number(
+            deliveryOrder.reduce((sum, item) => {
+                const itemYear = item.date_received.getUTCFullYear();
+                return itemYear === year
+                    ? sum + Number(item.waste_weight)
+                    : sum;
+            }, 0),
         );
 
         totalBaldesWeight = Number(
@@ -78,8 +90,9 @@ export class DeliveryOrderService {
         totalNeto = totalWeight - totalBaldesWeight;
 
         return {
-            totalWeight: totalWeight,
-            totalNeto: totalNeto,
+            totalWasteWeight: totalWeight,
+            totalWasteWeightNet: totalNeto,
+            totalWasteWeightYear: totalWeightPerYear,
         };
     }
 
