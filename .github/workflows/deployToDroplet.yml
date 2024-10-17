@@ -28,6 +28,7 @@ jobs:
               run: |
                   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
                     export NVM_DIR=~/.nvm
+                    source ~/.nvm/nvm.sh
                     source ~/.bashrc
                     cd /var/www/nestjs-app
                     pnpm install
