@@ -26,8 +26,9 @@ jobs:
 
             - name: Install dependencies on Droplet
               run: |
-                  ssh -o StrictHostKeyChecking=no -t ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
-                    source ~/.bashrc   # Explicitly load the environment
+                  ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
+                    export NVM_DIR=~/.nvm
+                    source ~/.bashrc
                     cd /var/www/nestjs-app
                     pnpm install
                     pnpm run build
