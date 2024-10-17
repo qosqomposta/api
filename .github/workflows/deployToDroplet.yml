@@ -31,6 +31,10 @@ jobs:
                     source ~/.nvm/nvm.sh
                     source ~/.bashrc
                     cd /var/www/nestjs-app
+                     echo "NODE_ENV=production" >> /var/www/nestjs-app/.env.production
+                    echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> /var/www/nestjs-app/.env.production
+                    echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /var/www/nestjs-app/.env.production
+                    echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /var/www/nestjs-app/.env.production
                     pnpm install
                     pnpm run build
                     pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
