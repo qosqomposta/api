@@ -5,7 +5,7 @@ module.exports = {
             script: 'dist/main.js',
             instances: 'max', // Adjust according to your server
             exec_mode: 'cluster',
-            watch: false,
+            watch: true,
             env: {
                 NODE_ENV: 'production',
             },
