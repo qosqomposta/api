@@ -20,6 +20,9 @@ async function bootstrap() {
     );
     app.setGlobalPrefix('api');
 
+    console.log(process.env.POSTGRES_DB);
+    console.log(process.env.NODE_ENV);
+
     await app.listen(PORT, () => {
         console.log('server is running on ' + PORT);
     });
