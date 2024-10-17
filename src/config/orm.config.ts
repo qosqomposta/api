@@ -11,5 +11,5 @@ export const configPostgresql = (): TypeOrmModuleOptions => ({
     entities: ['dist/**/*.entity{.ts,.js}'],
     migrations: ['dist/db/migrations/*{.ts,.js}'],
     synchronize: false,
-    ssl: process.env.NODE_ENV === 'production' ? true : false,
+    ssl: false,
 });
