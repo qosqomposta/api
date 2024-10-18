@@ -1,10 +1,6 @@
-export class ServicePricingSummaryDto {
-    id: string;
-    name: string;
-    price: number;
-    isAddon?: boolean;
-    frequency?: number;
-}
+import { ServicePricing } from 'src/service-pricing/entities/service-pricing.entity';
+
+export class ServicePricingSummaryDto extends ServicePricing {}
 
 export class SubscriptionSummaryDto {
     id: string;
@@ -16,5 +12,5 @@ export class SubscriptionSummaryDto {
     totalWasteWeightYear: number;
     totalWasteWeightNet: number;
     frequencyService: number;
-    servicePricings: ServicePricingSummaryDto[];
+    pricings: ServicePricingSummaryDto[];
 }

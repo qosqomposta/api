@@ -7,10 +7,7 @@ import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { FindSubscriptionByFamilyIdDto } from './dto/find-by-family-.dto';
 import { FamilyService } from 'src/family/family.service';
-import {
-    ServicePricingSummaryDto,
-    SubscriptionSummaryDto,
-} from './dto/subscription-summary.dto';
+import { SubscriptionSummaryDto } from './dto/subscription-summary.dto';
 import { DeliveryOrderService } from 'src/delivery-order/delivery-order.service';
 import { ClientType } from 'src/enums/clientType.enum';
 import { SERVICE_TYPE } from 'src/enums/subscription.enum';
@@ -84,17 +81,15 @@ export class SubscriptionService {
             );
         }
 
-        const pricings: ServicePricingSummaryDto[] = subscription.pricings.map(
-            (value) => {
-                return {
-                    id: value.id,
-                    name: value.name,
-                    price: value.price,
-                    isAddon: value.isAddon,
-                    frequency: value.frequency,
-                };
-            },
-        );
+        const pricings = subscription.pricings.map((value) => {
+            return {
+                id: value.id,
+                name: value.name,
+                price: value.price,
+                isAddon: value.isAddon,
+                frequency: value.frequency,
+            };
+        });
 
         let serviceHasAddons = 0;
 
@@ -107,7 +102,7 @@ export class SubscriptionService {
             }
         }
 
-        const serviceTypea = serviceHasAddons
+        const serviceType = serviceHasAddons
             ? SERVICE_TYPE.INTEGRAL
             : SERVICE_TYPE.SINGLE;
 
@@ -123,11 +118,10 @@ export class SubscriptionService {
         return {
             ...subscription,
             category: ClientType.FAMILY,
-            serviceType: serviceTypea,
+            serviceType: serviceType,
             totalWasteWeight: deliveryOrderSummary.totalWasteWeight,
             totalWasteWeightNet: deliveryOrderSummary.totalWasteWeightNet,
             totalWasteWeightYear: deliveryOrderSummary.totalWasteWeightYear,
-            servicePricings: pricings,
             frequencyService: frequencyService,
         };
     }
