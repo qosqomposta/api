@@ -3,3 +3,8 @@ export enum SUBSCRIPTION_STATUS {
     PAUSED = 'pausado',
     RETIRED = 'retirado',
 }
+
+export enum SERVICE_TYPE {
+    SINGLE = 'Compostaje',
+    INTEGRAL = 'Integral',
+}

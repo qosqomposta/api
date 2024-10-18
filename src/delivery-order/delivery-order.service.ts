@@ -5,15 +5,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeliveryOrder } from './entities/delivery-order.entity';
 import { randomUUID } from 'crypto';
-import { SubscriptionService } from 'src/subscription/subscription.service';
 import { SummaryWeightsDto } from './dto/total-waste-weight.dto';
+import { Subscription } from 'src/subscription/entities/subscription.entity';
 
 @Injectable()
 export class DeliveryOrderService {
     constructor(
         @InjectRepository(DeliveryOrder)
         private readonly deliveryOrderRepository: Repository<DeliveryOrder>,
-        private readonly subscriptionService: SubscriptionService,
+
+        @InjectRepository(Subscription)
+        private readonly subscriptionRespository: Repository<Subscription>,
     ) {}
 
     async create(
@@ -48,9 +50,11 @@ export class DeliveryOrderService {
         subscription_id: string,
         year: number,
     ): Promise<SummaryWeightsDto> {
-        const subscription = await this.subscriptionService.findOne(
-            subscription_id,
-        );
+        const subscription = await this.subscriptionRespository.findOne({
+            where: {
+                id: subscription_id,
+            },
+        });
         if (!subscription) {
             throw new NotFoundException('Subscription not found');
         }

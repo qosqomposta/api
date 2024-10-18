@@ -37,7 +37,7 @@ export class ServicePricing {
     oneTimePrice?: number;
 
     @Column({ nullable: true })
-    isAddon?: number;
+    isAddon?: boolean;
 
     @ManyToOne(() => WasteService, (wasteService) => wasteService.pricings, {
         nullable: true,

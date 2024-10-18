@@ -25,9 +25,9 @@ export class CustomerController {
         return this.customerService.findCustomerByFirebaseUid(firebaseUuid);
     }
 
-    @Get('family/:firebaseUuid')
-    findFamilyDetails(@Param('firebaseUuid') firebaseUuid: string) {
-        return this.customerService.findFamilyDetails(firebaseUuid);
+    @Get('summary/:firebaseUuid')
+    getCustomerSummary(@Param('firebaseUuid') firebaseUuid: string) {
+        return this.customerService.getCustomerSummary(firebaseUuid);
     }
 
     @Get()

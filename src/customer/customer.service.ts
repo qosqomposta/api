@@ -5,13 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
-import { FamilyCustomerSummaryDto } from './dto/summary.dto';
+import { CustomerSummaryDto } from './dto/summary.dto';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Injectable()
 export class CustomerService {
     constructor(
         @InjectRepository(Customer)
         private customerRepository: Repository<Customer>,
+        private subscriptionService: SubscriptionService,
     ) {}
     async create(createCustomerDto: CreateCustomerDto) {
         const newCustomer = this.customerRepository.create({
@@ -41,22 +43,6 @@ export class CustomerService {
     async findCustomerByFirebaseUid(firebaseUid: string): Promise<Customer> {
         const customer = await this.customerRepository.findOneBy({
             firebaseUid: firebaseUid,
-        });
-
-        if (!customer) {
-            throw new NotFoundException(
-                `Customer with firebase uid ${firebaseUid} not found`,
-            );
-        }
-        return customer;
-    }
-
-    async findFamilyDetails(firebaseUid: string): Promise<Customer> {
-        const customer = await this.customerRepository.findOne({
-            where: {
-                firebaseUid: firebaseUid,
-            },
-            relations: ['family'],
         });
 
         if (!customer) {
@@ -115,18 +101,32 @@ export class CustomerService {
         return await this.customerRepository.save(customer);
     }
 
-    async getFamilyCustomerSummary(firebaseUid: string): Promise<any> {
-        const customerSummary = await this.customerRepository.findOne({
+    async getCustomerSummary(firebaseUid: string): Promise<CustomerSummaryDto> {
+        const customer = await this.customerRepository.findOne({
             where: {
                 firebaseUid: firebaseUid,
             },
             relations: ['family', 'family.subscription'],
         });
 
-        if (!customerSummary) {
+        if (!customer) {
             throw new NotFoundException(
                 `Customer with id ${firebaseUid} not found`,
             );
         }
+
+        const subscription =
+            await this.subscriptionService.findSubscriptionSummaryByFamilyId({
+                family_id: customer.family.family_id,
+            });
+
+        return {
+            customerEmail: customer.email,
+            customerId: customer.customer_id,
+            customerName: customer.name,
+            familyId: customer.family.family_id,
+            familyName: customer.family.name,
+            subscription: subscription,
+        };
     }
 }

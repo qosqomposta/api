@@ -37,10 +37,12 @@ export class SubscriptionController {
     }
 
     @Post('/family/summary')
-    findSummaryByFamilyId(
+    findSubscriptionSummaryByFamilyId(
         @Body() findByFamilyDto: FindSubscriptionByFamilyIdDto,
     ) {
-        return this.subscriptionService.findSummaryByFamilyId(findByFamilyDto);
+        return this.subscriptionService.findSubscriptionSummaryByFamilyId(
+            findByFamilyDto,
+        );
     }
 
     @Patch(':id')

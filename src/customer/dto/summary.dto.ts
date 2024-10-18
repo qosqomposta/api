@@ -1,18 +1,10 @@
-export class FamilyCustomerSummaryDto {
-    customerId: number;
+import { SubscriptionSummaryDto } from 'src/subscription/dto/subscription-summary.dto';
+
+export class CustomerSummaryDto {
+    customerId: string;
     customerName: string;
     customerEmail: string;
-    familyId: number;
+    familyId: string;
     familyName: string;
-    subscription: {
-        startDate: string;
-        category: string;
-        status: string;
-        serviceType: string;
-        totalWasteWeight: number;
-        totalWasteWeightYear: number;
-        totalWasteWeightNet: number;
-        price: number;
-        deliveryMode: string;
-    };
+    subscription: SubscriptionSummaryDto;
 }
