@@ -12,5 +12,6 @@ export class SubscriptionSummaryDto {
     totalWasteWeightYear: number;
     totalWasteWeightNet: number;
     frequencyService: number;
+    mainPrice: number;
     pricings: ServicePricingSummaryDto[];
 }

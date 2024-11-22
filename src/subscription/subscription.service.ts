@@ -112,9 +112,9 @@ export class SubscriptionService {
                 new Date().getFullYear(),
             );
 
-        const frequencyService = pricings.filter((value) => !value.isAddon)[0]
-            .frequency;
-
+        const mainServicePricing = pricings.filter(
+            (value) => !value.isAddon,
+        )[0];
         return {
             ...subscription,
             category: ClientType.FAMILY,
@@ -122,7 +122,8 @@ export class SubscriptionService {
             totalWasteWeight: deliveryOrderSummary.totalWasteWeight,
             totalWasteWeightNet: deliveryOrderSummary.totalWasteWeightNet,
             totalWasteWeightYear: deliveryOrderSummary.totalWasteWeightYear,
-            frequencyService: frequencyService,
+            frequencyService: mainServicePricing.frequency,
+            mainPrice: mainServicePricing.price,
         };
     }
 

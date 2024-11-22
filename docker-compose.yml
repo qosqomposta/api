@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: nestjs_api
+    build:
+      context: .
+      dockerfile: ${DOCKERFILE:-Dockerfile.dev}  # Usa Dockerfile.dev por defecto
+      target: ${BUILD_TARGET:-development}       # Usa target development por defecto
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=${DB_USER:-postgres}
+      - DATABASE_PASSWORD=${DB_PASSWORD:-password}
+      - DATABASE_NAME=${DB_NAME:-mydatabase}
+    depends_on:
+      - postgres
+    volumes:
+      # Solo montar volumes en desarrollo
+      - ${NODE_ENV:-development} == development ? .:/usr/src/app
+      - ${NODE_ENV:-development} == development ? /usr/src/app/node_modules
+    command: ${CMD:-pnpm run start:dev}
+
+  postgres:
+    container_name: postgres_db
+    image: postgres:14-alpine
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
+      - POSTGRES_DB=${DB_NAME:-mydatabase}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
