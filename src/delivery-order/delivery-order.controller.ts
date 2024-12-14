@@ -11,6 +11,7 @@ import {
 import { DeliveryOrderService } from './delivery-order.service';
 import { CreateDeliveryOrderDto } from './dto/create-delivery-order.dto';
 import { UpdateDeliveryOrderDto } from './dto/update-delivery-order.dto';
+import { FindOptionsOrderValue } from 'typeorm';
 
 @Controller('delivery-order')
 export class DeliveryOrderController {
@@ -39,6 +40,17 @@ export class DeliveryOrderController {
         return this.deliveryOrderService.totalWasteWeightBySubscription(
             id,
             year,
+        );
+    }
+
+    @Get('/subscription/:id')
+    findDeliveryOrdersBySubscription(
+        @Param('id') id: string,
+        @Query('dateOrder') dateOrder: 'ASC' | 'DESC',
+    ) {
+        return this.deliveryOrderService.findOrdersBySubscription(
+            id,
+            dateOrder,
         );
     }
 

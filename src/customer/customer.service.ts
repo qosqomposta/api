@@ -121,12 +121,14 @@ export class CustomerService {
             });
 
         return {
-            customerEmail: customer.email,
-            customerId: customer.customer_id,
-            customerName: customer.name,
-            familyId: customer.family.family_id,
-            familyName: customer.family.name,
-            subscription: subscription,
+            customerSummary: {
+                customerEmail: customer.email,
+                customerId: customer.customer_id,
+                customerName: customer.name,
+                familyId: customer.family.family_id,
+                familyName: customer.family.name,
+            },
+            subscriptionSummary: subscription,
         };
     }
 }

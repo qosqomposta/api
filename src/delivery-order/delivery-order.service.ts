@@ -2,11 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDeliveryOrderDto } from './dto/create-delivery-order.dto';
 import { UpdateDeliveryOrderDto } from './dto/update-delivery-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsOrderValue, Repository } from 'typeorm';
 import { DeliveryOrder } from './entities/delivery-order.entity';
 import { randomUUID } from 'crypto';
 import { SummaryWeightsDto } from './dto/total-waste-weight.dto';
 import { Subscription } from 'src/subscription/entities/subscription.entity';
+import { DeliveryOrdersBySubscription } from './dto/delivery-orders-subscription';
 
 @Injectable()
 export class DeliveryOrderService {
@@ -31,6 +32,42 @@ export class DeliveryOrderService {
 
     async findAll(): Promise<DeliveryOrder[]> {
         return await this.deliveryOrderRepository.find();
+    }
+
+    async findOrdersBySubscription(
+        subscription_id: string,
+        dateOrder: 'ASC' | 'DESC',
+    ): Promise<DeliveryOrdersBySubscription> {
+        const subscription = await this.subscriptionRespository.findOne({
+            where: {
+                id: subscription_id,
+            },
+        });
+
+        if (!subscription) {
+            throw new NotFoundException('Subscription not found');
+        }
+
+        const [deliveryOrders, total] = await this.deliveryOrderRepository
+            .createQueryBuilder('deliveryOrder')
+            .leftJoinAndSelect('deliveryOrder.courier', 'courier')
+            .where('deliveryOrder.subscription_id = :subscription_id', {
+                subscription_id,
+            })
+            .orderBy('deliveryOrder.date_received', dateOrder)
+            .select('deliveryOrder')
+            .addSelect([
+                'courier.id',
+                'courier.name',
+                'courier.last_name',
+                'courier.mother_last_name',
+            ])
+            .getManyAndCount();
+
+        return {
+            delivery_orders: deliveryOrders,
+            total: total,
+        };
     }
 
     async findOne(id: string): Promise<DeliveryOrder[]> {
