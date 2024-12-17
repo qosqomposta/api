@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDeliveryOrderDto } from './dto/create-delivery-order.dto';
 import { UpdateDeliveryOrderDto } from './dto/update-delivery-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrderValue, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { DeliveryOrder } from './entities/delivery-order.entity';
 import { randomUUID } from 'crypto';
 import { SummaryWeightsDto } from './dto/total-waste-weight.dto';
@@ -37,6 +37,7 @@ export class DeliveryOrderService {
     async findOrdersBySubscription(
         subscription_id: string,
         dateOrder: 'ASC' | 'DESC',
+        limit: number,
     ): Promise<DeliveryOrdersBySubscription> {
         const subscription = await this.subscriptionRespository.findOne({
             where: {
@@ -62,6 +63,7 @@ export class DeliveryOrderService {
                 'courier.last_name',
                 'courier.mother_last_name',
             ])
+            .take(limit)
             .getManyAndCount();
 
         return {

@@ -47,10 +47,12 @@ export class DeliveryOrderController {
     findDeliveryOrdersBySubscription(
         @Param('id') id: string,
         @Query('dateOrder') dateOrder: 'ASC' | 'DESC',
+        @Query('limit') limit: number,
     ) {
         return this.deliveryOrderService.findOrdersBySubscription(
             id,
             dateOrder,
+            limit,
         );
     }
 
