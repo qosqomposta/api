@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    Query,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
@@ -20,14 +21,14 @@ export class CustomerController {
         return this.customerService.create(createCustomerDto);
     }
 
-    @Get('firebase/:firebaseUuid')
-    findCustomerByFirebaseUuid(@Param('firebaseUuid') firebaseUuid: string) {
-        return this.customerService.findCustomerByFirebaseUid(firebaseUuid);
-    }
-
     @Get('summary/:firebaseUuid')
     getCustomerSummary(@Param('firebaseUuid') firebaseUuid: string) {
         return this.customerService.getCustomerSummary(firebaseUuid);
+    }
+
+    @Get('by-firebase-uuid')
+    findCustomerByFirebaseUuid(@Query('firebaseUid') firebaseUuid: string) {
+        return this.customerService.findCustomerByFirebaseUid(firebaseUuid);
     }
 
     @Get()
