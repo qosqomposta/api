@@ -46,8 +46,11 @@ export class CustomerService {
     async findCustomerByFirebaseUid(
         firebaseUid: string,
     ): Promise<ProfileCustomer> {
-        const customer = await this.customerRepository.findOneBy({
-            firebaseUid: firebaseUid,
+        const customer = await this.customerRepository.findOne({
+            where: {
+                firebaseUid: firebaseUid,
+            },
+            relations: ['family'],
         });
 
         if (!customer) {
@@ -55,13 +58,9 @@ export class CustomerService {
                 `Customer with firebase uid ${firebaseUid} not found`,
             );
         }
-        const family = await this.famliyService.findOne(
-            customer.family.family_id,
-        );
 
         return {
             ...customer,
-            family: { ...family },
         };
     }
 
