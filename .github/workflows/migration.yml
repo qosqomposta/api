@@ -12,6 +12,13 @@ jobs:
               uses: webfactory/ssh-agent@v0.9.0
               with:
                   ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+            - name: Install dependencies
+              run: |
+                  ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
+                    cd /var/www/nestjs-app
+                    pnpm install
+                    pnpm install --save-dev @types/node
+                  EOF
 
             - name: Run migrations on Droplet
               run: |
