@@ -19,5 +19,5 @@ jobs:
                     export NVM_DIR=~/.nvm
                     source ~/.nvm/nvm.sh
                     cd /var/www/nestjs-app
-                    pnpm run migrations:run
+                    pnpm run migration:run
                   EOF
