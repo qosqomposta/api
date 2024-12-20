@@ -21,6 +21,8 @@ jobs:
                   rsync -avz --delete \
                     -e "ssh -o StrictHostKeyChecking=no" \
                     ./ ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }}:/var/www/nestjs-app
+                  pnpm install -g typescript
+                  pnpm i --save-dev @types/node
 
             - name: Install dependencies on Droplet
               run: |
@@ -36,7 +38,6 @@ jobs:
                     echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> /var/www/nestjs-app/.env.production
                     echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> /var/www/nestjs-app/.env.production
                     pnpm install
-                    pnpm install -g typescript
                     pnpm i --save-dev @types/node
                     pnpm run migration:run
                   EOF
