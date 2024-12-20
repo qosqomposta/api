@@ -36,5 +36,7 @@ jobs:
                     echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> /var/www/nestjs-app/.env.production
                     echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> /var/www/nestjs-app/.env.production
                     pnpm install
+                    pnpm install -g typescript
+                    pnpm i --save-dev @types/node
                     pnpm run migration:run
                   EOF
