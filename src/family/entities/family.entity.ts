@@ -17,6 +17,9 @@ export class Family {
     @Column()
     name: string;
 
+    @Column({ nullable: true })
+    district: string;
+
     @Column({ default: 'Default address' })
     address: string;
 

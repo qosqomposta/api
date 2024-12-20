@@ -7,12 +7,15 @@ import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { CustomerSummaryDto } from './dto/summary.dto';
 import { SubscriptionService } from 'src/subscription/subscription.service';
+import { ProfileCustomer } from './dto/profile-by-firebase-uid.dto';
+import { FamilyService } from 'src/family/family.service';
 
 @Injectable()
 export class CustomerService {
     constructor(
         @InjectRepository(Customer)
         private customerRepository: Repository<Customer>,
+        private famliyService: FamilyService,
         private subscriptionService: SubscriptionService,
     ) {}
     async create(createCustomerDto: CreateCustomerDto) {
@@ -40,7 +43,9 @@ export class CustomerService {
         return customer;
     }
 
-    async findCustomerByFirebaseUid(firebaseUid: string): Promise<Customer> {
+    async findCustomerByFirebaseUid(
+        firebaseUid: string,
+    ): Promise<ProfileCustomer> {
         const customer = await this.customerRepository.findOneBy({
             firebaseUid: firebaseUid,
         });
@@ -50,7 +55,14 @@ export class CustomerService {
                 `Customer with firebase uid ${firebaseUid} not found`,
             );
         }
-        return customer;
+        const family = await this.famliyService.findOne(
+            customer.family.family_id,
+        );
+
+        return {
+            ...customer,
+            family: { ...family },
+        };
     }
 
     async update(
