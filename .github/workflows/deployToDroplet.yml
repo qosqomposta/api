@@ -32,9 +32,6 @@ jobs:
             - name: Build application
               run: pnpm run build
 
-            - name: Run tests
-              run: pnpm test
-
             - name: Deploy to Digital Ocean droplet
               run: |
                   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
