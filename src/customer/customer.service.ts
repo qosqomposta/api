@@ -131,6 +131,12 @@ export class CustomerService {
                 family_id: customer.family.family_id,
             });
 
+        if (!subscription) {
+            throw new NotFoundException(
+                `No se encontró subscripción para la familia ${customer.family.family_id}`,
+            );
+        }
+
         return {
             customerSummary: {
                 customerEmail: customer.email,
