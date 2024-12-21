@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -66,7 +70,16 @@ export class SubscriptionService {
     async findSubscriptionSummaryByFamilyId(
         payload: FindSubscriptionByFamilyIdDto,
     ): Promise<SubscriptionSummaryDto> {
+        if (!payload.family_id) {
+            throw new BadRequestException('family_id is required');
+        }
+
         const family = await this.familyService.findOne(payload.family_id);
+        if (!family) {
+            throw new NotFoundException(
+                `Family with id ${payload.family_id} not found`,
+            );
+        }
 
         const subscription = await this.subscriptionRepository.findOne({
             where: {
@@ -81,52 +94,62 @@ export class SubscriptionService {
             );
         }
 
-        const pricings = subscription.pricings.map((value) => {
-            return {
-                id: value.id,
-                name: value.name,
-                price: value.price,
-                isAddon: value.isAddon,
-                frequency: value.frequency,
-            };
-        });
-
-        let serviceHasAddons = 0;
-
-        for (const obj of subscription.pricings) {
-            if (obj.isAddon === true) {
-                serviceHasAddons++;
-            }
-            if (serviceHasAddons >= 1) {
-                break;
-            }
+        if (!subscription.pricings || subscription.pricings.length === 0) {
+            throw new BadRequestException(
+                `No pricing information found for subscription ${subscription.id}`,
+            );
         }
 
-        const serviceType = serviceHasAddons
+        const pricings = subscription.pricings.map((value) => ({
+            id: value.id,
+            name: value.name,
+            price: value.price,
+            isAddon: value.isAddon,
+            frequency: value.frequency,
+        }));
+
+        const hasAddons = subscription.pricings.some(
+            (pricing) => pricing.isAddon,
+        );
+        const serviceType = hasAddons
             ? SERVICE_TYPE.INTEGRAL
             : SERVICE_TYPE.SINGLE;
 
-        const deliveryOrderSummary =
-            await this.deliveryOrderService.totalWasteWeightBySubscription(
-                subscription.id,
-                new Date().getFullYear(),
+        const mainServicePricing = pricings.find((value) => !value.isAddon);
+        if (!mainServicePricing) {
+            throw new BadRequestException(
+                `No main service found for subscription ${subscription.id}`,
             );
+        }
 
-        const mainServicePricing = pricings.filter(
-            (value) => !value.isAddon,
-        )[0];
+        let deliveryOrderSummary;
+        try {
+            deliveryOrderSummary =
+                await this.deliveryOrderService.totalWasteWeightBySubscription(
+                    subscription.id,
+                    new Date().getFullYear(),
+                );
+        } catch (error) {
+            console.error('Error fetching delivery order summary:', error);
+            deliveryOrderSummary = {
+                totalWasteWeight: 0,
+                totalWasteWeightNet: 0,
+                totalWasteWeightYear: 0,
+            };
+        }
+
         return {
             ...subscription,
             category: ClientType.FAMILY,
             serviceType: serviceType,
-            totalWasteWeight: deliveryOrderSummary.totalWasteWeight,
-            totalWasteWeightNet: deliveryOrderSummary.totalWasteWeightNet,
-            totalWasteWeightYear: deliveryOrderSummary.totalWasteWeightYear,
+            totalWasteWeight: deliveryOrderSummary?.totalWasteWeight ?? 0,
+            totalWasteWeightNet: deliveryOrderSummary?.totalWasteWeightNet ?? 0,
+            totalWasteWeightYear:
+                deliveryOrderSummary?.totalWasteWeightYear ?? 0,
             frequencyService: mainServicePricing.frequency,
             mainPrice: mainServicePricing.price,
         };
     }
-
     async update(
         id: string,
         updateSubscriptionDto: UpdateSubscriptionDto,
