@@ -70,7 +70,7 @@ export class SubscriptionService {
 
         const subscription = await this.subscriptionRepository.findOne({
             where: {
-                family: family,
+                family: { family_id: family.family_id },
             },
             relations: ['pricings'],
         });
