@@ -32,7 +32,10 @@ jobs:
             - name: Build application
               run: pnpm run build
 
-            - name: Deploy to Digital Ocean droplet
+            # - name: Run tests
+            #   run: pnpm test
+
+            - name: Deploy and run migrations
               run: |
                   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
                     export NVM_DIR=~/.nvm
@@ -55,11 +58,21 @@ jobs:
                     # Set production environment
                     export NODE_ENV=production
                     
-                    # Install dependencies
-                    pnpm install
+                    # Install dependencies including devDependencies needed for migrations
+                    pnpm install --include=dev
                     
                     # Build the application
                     pnpm run build
+
+                    # Run TypeORM migrations with ts-node configuration
+                    echo "Running database migrations..."
+                    NODE_ENV=production npx ts-node --require tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/config/datasource.ts
+
+                    # Verify migrations status (optional)
+                    NODE_ENV=production npx ts-node --require tsconfig-paths/register ./node_modules/typeorm/cli.js migration:show -d src/config/datasource.ts
+                    
+                    # Clean up dev dependencies after migrations
+                    pnpm install --prod
                     
                     # Restart or start the application using PM2
                     pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
