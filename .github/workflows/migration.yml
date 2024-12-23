@@ -5,7 +5,7 @@ on:
         branches: [main]
 
 jobs:
-    deploy:
+    migration:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -49,11 +49,9 @@ jobs:
                     echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> .env.production
                     echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> .env.production
 
-                    # Set production environment
-                    export NODE_ENV=production
                     
                     # Install dependencies including devDependencies needed for migrations
-                    pnpm install --include=dev
+                    pnpm install 
 
                     # Show Migrations
                     echo "Show database migrations"
