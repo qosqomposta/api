@@ -1,43 +1,66 @@
-name: Run Database Migrations
+name: Migrations
 
 on:
-    workflow_dispatch:
+    push:
+        branches: [main]
 
 jobs:
     deploy:
         runs-on: ubuntu-latest
-
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+            - uses: actions/checkout@v4
 
             - name: Set up SSH
               uses: webfactory/ssh-agent@v0.9.0
               with:
                   ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-            - name: Rsync files to Droplet
-              run: |
-                  rsync -avz --delete \
-                    -e "ssh -o StrictHostKeyChecking=no" \
-                    ./ ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }}:/var/www/nestjs-app
-                  pnpm install -g typescript
-                  pnpm i --save-dev @types/node
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: latest
 
-            - name: Install dependencies on Droplet
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '18'
+                  cache: 'pnpm'
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Deploy and run migrations
               run: |
                   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
                     export NVM_DIR=~/.nvm
                     source ~/.nvm/nvm.sh
                     source ~/.bashrc
+                    
+                    # Navigate to project directory
                     cd /var/www/nestjs-app
+                    
+                    # Pull latest changes
+                    git pull
+                    
+                    # Update environment variables
+                    echo "POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}'" > .env.production
+                    echo "POSTGRES_USER='${{ secrets.POSTGRES_USER }}'" >> .env.production
+                    echo "POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'" >> .env.production
+                    echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> .env.production
+                    echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> .env.production
+
+                    # Set production environment
                     export NODE_ENV=production
-                    echo "POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}'" >> /var/www/nestjs-app/.env.production
-                    echo "POSTGRES_USER='${{ secrets.POSTGRES_USER }}'" >> /var/www/nestjs-app/.env.production
-                    echo "POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'" >> /var/www/nestjs-app/.env.production
-                    echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> /var/www/nestjs-app/.env.production
-                    echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> /var/www/nestjs-app/.env.production
-                    pnpm install
-                    pnpm i --save-dev @types/node
+                    
+                    # Install dependencies including devDependencies needed for migrations
+                    pnpm install --include=dev
+
+                    # Show Migrations
+                    echo "Show database migrations"
+                    pnpm run migration:show
+
+                    # Run Migrations
+                    echo "Running database migrations..."
                     pnpm run migration:run
+
                   EOF
