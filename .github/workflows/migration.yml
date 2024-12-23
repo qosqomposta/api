@@ -43,11 +43,11 @@ jobs:
                     git pull
                     
                     # Update environment variables
-                    echo "POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}'" > .env.production
-                    echo "POSTGRES_USER='${{ secrets.POSTGRES_USER }}'" >> .env.production
-                    echo "POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'" >> .env.production
-                    echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> .env.production
-                    echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> .env.production
+                    echo "POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}'" > .env.development
+                    echo "POSTGRES_USER='${{ secrets.POSTGRES_USER }}'" >> .env.development
+                    echo "POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'" >> .env.development
+                    echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> .env.development
+                    echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> .env.development
 
                     
                     # Install dependencies including devDependencies needed for migrations
