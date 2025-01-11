@@ -10,7 +10,8 @@ import {
 import { SubscriptionService } from './subscription.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
-import { FindSubscriptionByFamilyIdDto } from './dto/find-by-family-.dto';
+import { FindSubscriptionByFamilyIdDto } from './dto/find-by-family.dto';
+import { FindSubscriptionByCompanyDto } from './dto/find-by-company.dto';
 
 @Controller('subscription')
 export class SubscriptionController {
@@ -33,7 +34,16 @@ export class SubscriptionController {
 
     @Post('/family')
     findOneByFamilyId(@Body() findByFamilyDto: FindSubscriptionByFamilyIdDto) {
-        return this.subscriptionService.findByFamilyId(findByFamilyDto);
+        return this.subscriptionService.findSubscriptionByFamilyId(
+            findByFamilyDto,
+        );
+    }
+
+    @Post('/company')
+    findOneByCompanyId(@Body() findByCompanyDto: FindSubscriptionByCompanyDto) {
+        return this.subscriptionService.findSubscriptionByCompanyId(
+            findByCompanyDto,
+        );
     }
 
     @Post('/family/summary')

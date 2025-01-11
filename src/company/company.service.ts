@@ -25,7 +25,14 @@ export class CompanyService {
     }
 
     async findOne(id: string) {
-        return await this.companyRepository.findBy({ id: id });
+        const company = await this.companyRepository.findOneBy({
+            id: id,
+        });
+
+        if (!company) {
+            throw new NotFoundException(`Company with id ${id} not found`);
+        }
+        return company;
     }
 
     async update(id: string, updateCompanyDto: UpdateCompanyDto) {
