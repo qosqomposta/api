@@ -50,4 +50,7 @@ export class Company {
 
     @Column({ nullable: true })
     customId: string;
+
+    @Column({ nullable: true })
+    district: string;
 }

@@ -19,6 +19,12 @@ import { GetSubscriptionDto } from './dto/get-subscription.dto';
 import { FindSubscriptionByCompanyDto } from './dto/find-by-company.dto';
 import { CompanyService } from 'src/company/company.service';
 import { FindSubscriptionByFirebaseUidDto } from './dto/find-by-firebaseuid.dto';
+import {
+    FRIDAY,
+    FRIDAY_PICKUP,
+    SATURDAY,
+    SATURDAY_PICKUP,
+} from 'src/main.config';
 
 @Injectable()
 export class SubscriptionService {
@@ -200,6 +206,11 @@ export class SubscriptionService {
             serviceType: serviceType,
             frequencyService: mainServicePricing.frequency,
             mainPrice: mainServicePricing.price,
+            dayOfPickup: SATURDAY_PICKUP.includes(family.district)
+                ? SATURDAY
+                : FRIDAY_PICKUP.includes(family.district)
+                ? FRIDAY
+                : SATURDAY,
         };
     }
 
@@ -264,6 +275,11 @@ export class SubscriptionService {
             serviceType: serviceType,
             frequencyService: mainServicePricing.frequency,
             mainPrice: mainServicePricing.price,
+            dayOfPickup: SATURDAY_PICKUP.includes(company.district)
+                ? SATURDAY
+                : FRIDAY_PICKUP.includes(company.district)
+                ? FRIDAY
+                : SATURDAY,
         };
     }
     async update(
