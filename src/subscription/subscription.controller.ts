@@ -12,6 +12,7 @@ import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { FindSubscriptionByFamilyIdDto } from './dto/find-by-family.dto';
 import { FindSubscriptionByCompanyDto } from './dto/find-by-company.dto';
+import { FindSubscriptionByFirebaseUidDto } from './dto/find-by-firebaseuid.dto';
 
 @Controller('subscription')
 export class SubscriptionController {
@@ -33,7 +34,9 @@ export class SubscriptionController {
     }
 
     @Post('/family')
-    findOneByFamilyId(@Body() findByFamilyDto: FindSubscriptionByFamilyIdDto) {
+    findOneByFamilyId(
+        @Body() findByFamilyDto: FindSubscriptionByFirebaseUidDto,
+    ) {
         return this.subscriptionService.findSubscriptionByFamilyId(
             findByFamilyDto,
         );

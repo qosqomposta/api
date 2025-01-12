@@ -1,4 +1,6 @@
 import {
+    forwardRef,
+    Inject,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
@@ -9,12 +11,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Family } from './entities/family.entity';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { CustomerService } from 'src/customer/customer.service';
 
 @Injectable()
 export class FamilyService {
     constructor(
         @InjectRepository(Family)
         private readonly familyRepository: Repository<Family>,
+        @Inject(forwardRef(() => CustomerService))
+        private readonly customerService: CustomerService,
     ) {}
     async create(createFamilyDto: CreateFamilyDto) {
         const newFamily = this.familyRepository.create({
@@ -36,6 +41,27 @@ export class FamilyService {
 
         if (!family) {
             throw new NotFoundException(`Family with id ${id} not found`);
+        }
+        return family;
+    }
+
+    async findByFirebaseUid(firebaseUid: string): Promise<Family> {
+        const user = await this.customerService.findCustomerByFirebaseUid(
+            firebaseUid,
+        );
+        if (!user) {
+            throw new NotFoundException(
+                `No se encontró el usuario ${firebaseUid}`,
+            );
+        }
+        const family = await this.familyRepository.findOneBy({
+            family_id: user.family.family_id,
+        });
+
+        if (!family) {
+            throw new NotFoundException(
+                `Family with id ${family.family_id} not found`,
+            );
         }
         return family;
     }

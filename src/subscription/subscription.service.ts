@@ -18,6 +18,7 @@ import { SERVICE_TYPE } from 'src/enums/subscription.enum';
 import { GetSubscriptionDto } from './dto/get-subscription.dto';
 import { FindSubscriptionByCompanyDto } from './dto/find-by-company.dto';
 import { CompanyService } from 'src/company/company.service';
+import { FindSubscriptionByFirebaseUidDto } from './dto/find-by-firebaseuid.dto';
 
 @Injectable()
 export class SubscriptionService {
@@ -137,16 +138,18 @@ export class SubscriptionService {
     }
 
     async findSubscriptionByFamilyId(
-        payload: FindSubscriptionByFamilyIdDto,
+        payload: FindSubscriptionByFirebaseUidDto,
     ): Promise<GetSubscriptionDto> {
-        if (!payload.family_id) {
-            throw new BadRequestException('family_id is required');
+        if (!payload.firebaseUid) {
+            throw new BadRequestException('firebaseUid is required');
         }
 
-        const family = await this.familyService.findOne(payload.family_id);
+        const family = await this.familyService.findByFirebaseUid(
+            payload.firebaseUid,
+        );
         if (!family) {
             throw new NotFoundException(
-                `Family with id ${payload.family_id} not found`,
+                `Family with id ${payload.firebaseUid} not found`,
             );
         }
 
@@ -257,7 +260,7 @@ export class SubscriptionService {
 
         return {
             ...subscription,
-            category: ClientType.FAMILY,
+            category: ClientType.COMPANY,
             serviceType: serviceType,
             frequencyService: mainServicePricing.frequency,
             mainPrice: mainServicePricing.price,
