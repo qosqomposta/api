@@ -59,7 +59,7 @@ jobs:
             - name: Run migrations and restart app
               run: |
                   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
-                    cd /var/www/nestjs-app
+                    cd /var/www/qosqomposta-api
                     
                     export NVM_DIR=~/.nvm
                     source ~/.nvm/nvm.sh
