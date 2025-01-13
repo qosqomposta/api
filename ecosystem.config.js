@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: 'nestjs-app',
+            name: 'qosomposta-api',
             script: 'dist/main.js',
             instances: 'max', // Adjust according to your server
             exec_mode: 'cluster',
