@@ -5,15 +5,10 @@ on:
         branches: [main]
 
 jobs:
-    deploy:
+    build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-
-            - name: Set up SSH
-              uses: webfactory/ssh-agent@v0.9.0
-              with:
-                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v2
@@ -32,48 +27,49 @@ jobs:
             - name: Build application
               run: pnpm run build
 
-            # - name: Run tests
-            #   run: pnpm test
+            - name: Create env file
+              run: |
+                  echo "POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}'" > .env.production
+                  echo "POSTGRES_USER='${{ secrets.POSTGRES_USER }}'" >> .env.production
+                  echo "POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'" >> .env.production
+                  echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> .env.production
+                  echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> .env.production
 
-            - name: Deploy and run migrations
+            - name: Copy files to droplet
+              uses: appleboy/scp-action@master
+              with:
+                  host: ${{ secrets.DROPLET_IP }}
+                  username: ${{ secrets.DROPLET_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  source: 'dist/,node_modules/,package.json,ecosystem.config.js,.env.production'
+                  target: '/var/www/qosqomposta-api'
+                  strip_components: 0
+
+    migrate-and-restart:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up SSH
+              uses: webfactory/ssh-agent@v0.9.0
+              with:
+                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+            - name: Run migrations and restart app
               run: |
                   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
+                    cd /var/www/nestjs-app
+                    
                     export NVM_DIR=~/.nvm
                     source ~/.nvm/nvm.sh
                     source ~/.bashrc
-                    
-                    # Navigate to project directory
-                    cd /var/www/nestjs-app
-                    
-                    # Pull latest changes
-                    git pull
-                    
-                    # Update environment variables
-                    echo "POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}'" > .env.production
-                    echo "POSTGRES_USER='${{ secrets.POSTGRES_USER }}'" >> .env.production
-                    echo "POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'" >> .env.production
-                    echo "POSTGRES_DB='${{ secrets.POSTGRES_DB }}'" >> .env.production
-                    echo "POSTGRES_PORT='${{ secrets.POSTGRES_PORT }}'" >> .env.production
-
-                    # Set production environment
                     export NODE_ENV=production
-                    
-                    # Install dependencies including devDependencies needed for migrations
-                    pnpm install --include=dev
-                    
-                    # Build the application
-                    pnpm run build
 
-                    # Run TypeORM migrations with ts-node configuration
+                    # Run TypeORM migrations
                     echo "Running database migrations..."
                     NODE_ENV=production npx ts-node --require tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/config/datasource.ts
 
-                    # Verify migrations status (optional)
-                    NODE_ENV=production npx ts-node --require tsconfig-paths/register ./node_modules/typeorm/cli.js migration:show -d src/config/datasource.ts
-                    
-                    # Clean up dev dependencies after migrations
-                    pnpm install --prod
-                    
-                    # Restart or start the application using PM2
+                    # Restart PM2 process
                     pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
                   EOF
