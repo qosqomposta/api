@@ -4,14 +4,9 @@ import { CustomerController } from './customer.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { SubscriptionModule } from 'src/subscription/subscription.module';
-import { FamilyModule } from 'src/family/family.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Customer]),
-        SubscriptionModule,
-        FamilyModule,
-    ],
+    imports: [TypeOrmModule.forFeature([Customer]), SubscriptionModule],
     controllers: [CustomerController],
     providers: [CustomerService],
     exports: [CustomerService],

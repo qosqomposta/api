@@ -20,6 +20,11 @@ export class CompanyController {
         return this.companyService.create(createCompanyDto);
     }
 
+    @Get('summary/:firebaseUuid')
+    getCustomerSummary(@Param('firebaseUuid') firebaseUuid: string) {
+        return this.companyService.getCompanySummary(firebaseUuid);
+    }
+
     @Get()
     findAll() {
         return this.companyService.findAll();

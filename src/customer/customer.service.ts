@@ -8,14 +8,12 @@ import { randomUUID } from 'crypto';
 import { CustomerSummaryDto } from './dto/summary.dto';
 import { SubscriptionService } from 'src/subscription/subscription.service';
 import { ProfileCustomer } from './dto/profile-by-firebase-uid.dto';
-import { FamilyService } from 'src/family/family.service';
 
 @Injectable()
 export class CustomerService {
     constructor(
         @InjectRepository(Customer)
         private customerRepository: Repository<Customer>,
-        private famliyService: FamilyService,
         private subscriptionService: SubscriptionService,
     ) {}
     async create(createCustomerDto: CreateCustomerDto) {

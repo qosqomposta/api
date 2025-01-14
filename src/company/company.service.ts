@@ -1,16 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    forwardRef,
+    Inject,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { SubscriptionService } from 'src/subscription/subscription.service';
+import { CompanySummaryDto } from './dto/get-summary.dto';
 
 @Injectable()
 export class CompanyService {
     constructor(
         @InjectRepository(Company)
         private readonly companyRepository: Repository<Company>,
+        @Inject(forwardRef(() => SubscriptionService))
+        private subscriptionService: SubscriptionService,
     ) {}
     async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
         const newCompany = this.companyRepository.create({
@@ -77,5 +86,43 @@ export class CompanyService {
 
         company.deletedAt = null;
         return this.companyRepository.save(company);
+    }
+
+    async getCompanySummary(firebaseUid: string): Promise<CompanySummaryDto> {
+        const company = await this.companyRepository.findOne({
+            where: {
+                firebaseUid: firebaseUid,
+            },
+            relations: ['subscription'],
+        });
+
+        if (!company) {
+            throw new NotFoundException(
+                `Company with firebaseUid ${firebaseUid} not found`,
+            );
+        }
+
+        const subscription =
+            await this.subscriptionService.findSubscriptionSummaryByCompanyId({
+                company_id: company.id,
+            });
+
+        if (!subscription) {
+            throw new NotFoundException(
+                `No se encontró subscripción para la familia ${company.id}`,
+            );
+        }
+
+        return {
+            companySummary: {
+                email: company.email,
+                ownerName: company.owner_name,
+                name: company.name,
+                id: company.id,
+                phoneNumber: company.phoneNumber,
+                district: company.district,
+            },
+            subscriptionSummary: subscription,
+        };
     }
 }

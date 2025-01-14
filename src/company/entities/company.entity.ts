@@ -12,6 +12,9 @@ export class Company {
     @PrimaryColumn()
     id: string;
 
+    @Column({ unique: true, nullable: true })
+    firebaseUid: string;
+
     @Column()
     name: string;
 

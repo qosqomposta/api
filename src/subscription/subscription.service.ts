@@ -143,6 +143,90 @@ export class SubscriptionService {
         };
     }
 
+    async findSubscriptionSummaryByCompanyId(
+        payload: FindSubscriptionByCompanyDto,
+    ): Promise<SubscriptionSummaryDto> {
+        if (!payload.company_id) {
+            throw new BadRequestException('company_id is required');
+        }
+
+        const company = await this.companyService.findOne(payload.company_id);
+        if (!company) {
+            throw new NotFoundException(
+                `Company with id ${payload.company_id} not found`,
+            );
+        }
+
+        const subscription = await this.subscriptionRepository.findOne({
+            where: {
+                company: { id: company.id },
+            },
+            relations: ['pricings'],
+        });
+
+        if (!subscription) {
+            throw new NotFoundException(
+                `Subscriptions for company ${company.id} not found`,
+            );
+        }
+
+        if (!subscription.pricings || subscription.pricings.length === 0) {
+            throw new BadRequestException(
+                `No pricing information found for subscription ${subscription.id}`,
+            );
+        }
+
+        const pricings = subscription.pricings.map((value) => ({
+            id: value.id,
+            name: value.name,
+            price: value.price,
+            isAddon: value.isAddon,
+            frequency: value.frequency,
+        }));
+
+        const hasAddons = subscription.pricings.some(
+            (pricing) => pricing.isAddon,
+        );
+        const serviceType = hasAddons
+            ? SERVICE_TYPE.INTEGRAL
+            : SERVICE_TYPE.SINGLE;
+
+        const mainServicePricing = pricings.find((value) => !value.isAddon);
+        if (!mainServicePricing) {
+            throw new BadRequestException(
+                `No main service found for subscription ${subscription.id}`,
+            );
+        }
+
+        let deliveryOrderSummary;
+        try {
+            deliveryOrderSummary =
+                await this.deliveryOrderService.totalWasteWeightBySubscription(
+                    subscription.id,
+                    new Date().getFullYear(),
+                );
+        } catch (error) {
+            console.error('Error fetching delivery order summary:', error);
+            deliveryOrderSummary = {
+                totalWasteWeight: 0,
+                totalWasteWeightNet: 0,
+                totalWasteWeightYear: 0,
+            };
+        }
+
+        return {
+            ...subscription,
+            category: ClientType.FAMILY,
+            serviceType: serviceType,
+            totalWasteWeight: deliveryOrderSummary?.totalWasteWeight ?? 0,
+            totalWasteWeightNet: deliveryOrderSummary?.totalWasteWeightNet ?? 0,
+            totalWasteWeightYear:
+                deliveryOrderSummary?.totalWasteWeightYear ?? 0,
+            frequencyService: mainServicePricing.frequency,
+            mainPrice: mainServicePricing.price,
+        };
+    }
+
     async findSubscriptionByFamilyId(
         payload: FindSubscriptionByFirebaseUidDto,
     ): Promise<GetSubscriptionDto> {
