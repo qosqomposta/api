@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    Query,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -23,6 +24,11 @@ export class CompanyController {
     @Get('summary/:firebaseUuid')
     getCustomerSummary(@Param('firebaseUuid') firebaseUuid: string) {
         return this.companyService.getCompanySummary(firebaseUuid);
+    }
+
+    @Get('by-firebase-uuid')
+    findCustomerByFirebaseUuid(@Query('firebaseUid') firebaseUuid: string) {
+        return this.companyService.findCompanyByFirebaseUid(firebaseUuid);
     }
 
     @Get()

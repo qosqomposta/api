@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { SubscriptionService } from 'src/subscription/subscription.service';
 import { CompanySummaryDto } from './dto/get-summary.dto';
+import { ProfileCompany } from './dto/get-profile.tdo';
 
 @Injectable()
 export class CompanyService {
@@ -42,6 +43,25 @@ export class CompanyService {
             throw new NotFoundException(`Company with id ${id} not found`);
         }
         return company;
+    }
+
+    async findCompanyByFirebaseUid(
+        firebaseUid: string,
+    ): Promise<ProfileCompany> {
+        const company = await this.companyRepository.findOne({
+            where: {
+                firebaseUid: firebaseUid,
+            },
+        });
+
+        if (!company) {
+            throw new NotFoundException(
+                `Company with firebase uid ${firebaseUid} not found`,
+            );
+        }
+        return {
+            ...company,
+        };
     }
 
     async update(id: string, updateCompanyDto: UpdateCompanyDto) {
