@@ -300,16 +300,18 @@ export class SubscriptionService {
     }
 
     async findSubscriptionByCompanyId(
-        payload: FindSubscriptionByCompanyDto,
+        payload: FindSubscriptionByFirebaseUidDto,
     ): Promise<GetSubscriptionDto> {
-        if (!payload.company_id) {
-            throw new BadRequestException('company_id is required');
+        if (!payload.firebaseUid) {
+            throw new BadRequestException('firebaseUid is required');
         }
 
-        const company = await this.companyService.findOne(payload.company_id);
+        const company = await this.companyService.findCompanyByFirebaseUid(
+            payload.firebaseUid,
+        );
         if (!company) {
             throw new NotFoundException(
-                `Company with id ${payload.company_id} not found`,
+                `Company with id ${payload.firebaseUid} not found`,
             );
         }
 

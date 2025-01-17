@@ -43,7 +43,9 @@ export class SubscriptionController {
     }
 
     @Post('/company')
-    findOneByCompanyId(@Body() findByCompanyDto: FindSubscriptionByCompanyDto) {
+    findOneByCompanyId(
+        @Body() findByCompanyDto: FindSubscriptionByFirebaseUidDto,
+    ) {
         return this.subscriptionService.findSubscriptionByCompanyId(
             findByCompanyDto,
         );
