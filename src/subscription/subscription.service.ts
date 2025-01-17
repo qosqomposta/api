@@ -25,6 +25,7 @@ import {
     SATURDAY,
     SATURDAY_PICKUP,
 } from 'src/main.config';
+import { SummaryWeightsDto } from 'src/delivery-order/dto/total-waste-weight.dto';
 
 @Injectable()
 export class SubscriptionService {
@@ -198,7 +199,7 @@ export class SubscriptionService {
             );
         }
 
-        let deliveryOrderSummary;
+        let deliveryOrderSummary: SummaryWeightsDto;
         try {
             deliveryOrderSummary =
                 await this.deliveryOrderService.totalWasteWeightBySubscription(
@@ -216,7 +217,7 @@ export class SubscriptionService {
 
         return {
             ...subscription,
-            category: ClientType.FAMILY,
+            category: ClientType.COMPANY,
             serviceType: serviceType,
             totalWasteWeight: deliveryOrderSummary?.totalWasteWeight ?? 0,
             totalWasteWeightNet: deliveryOrderSummary?.totalWasteWeightNet ?? 0,
