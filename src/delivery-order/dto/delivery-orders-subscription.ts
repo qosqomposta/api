@@ -10,5 +10,7 @@ export class DeliveryOrders {
 
 export class DeliveryOrdersBySubscription {
     delivery_orders: DeliveryOrders[];
+    totalWeight: number;
+    totalWeightNet: number;
     total: number;
 }

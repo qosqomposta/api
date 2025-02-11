@@ -37,7 +37,8 @@ export class DeliveryOrderService {
     async findOrdersBySubscription(
         subscription_id: string,
         dateOrder: 'ASC' | 'DESC',
-        limit: number,
+        year: number,
+        limit?: number,
     ): Promise<DeliveryOrdersBySubscription> {
         const subscription = await this.subscriptionRespository.findOne({
             where: {
@@ -49,12 +50,23 @@ export class DeliveryOrderService {
             throw new NotFoundException('Subscription not found');
         }
 
-        const [deliveryOrders, total] = await this.deliveryOrderRepository
+        const queryBuilder = this.deliveryOrderRepository
             .createQueryBuilder('deliveryOrder')
             .leftJoinAndSelect('deliveryOrder.courier', 'courier')
             .where('deliveryOrder.subscription_id = :subscription_id', {
                 subscription_id,
-            })
+            });
+
+        if (year) {
+            queryBuilder.andWhere(
+                'EXTRACT(YEAR FROM deliveryOrder.date_received) = :year',
+                {
+                    year,
+                },
+            );
+        }
+
+        queryBuilder
             .orderBy('deliveryOrder.date_received', dateOrder)
             .select('deliveryOrder')
             .addSelect([
@@ -62,13 +74,27 @@ export class DeliveryOrderService {
                 'courier.name',
                 'courier.last_name',
                 'courier.mother_last_name',
-            ])
-            .take(limit)
-            .getManyAndCount();
+            ]);
 
+        if (limit) {
+            queryBuilder.take(limit);
+        }
+
+        const [deliveryOrders, total] = await queryBuilder.getManyAndCount();
+
+        const totalBaldesWeight = deliveryOrders.reduce((sum, item) => {
+            return sum + Number(item.peso_balde);
+        }, 0);
+        const totalWeight = deliveryOrders.reduce((sum, item) => {
+            return sum + Number(item.waste_weight);
+        }, 0);
+
+        console.log(year);
         return {
             delivery_orders: deliveryOrders,
             total: total,
+            totalWeight: totalWeight,
+            totalWeightNet: totalWeight - totalBaldesWeight,
         };
     }
 
