@@ -3,3 +3,9 @@ export enum ClientType {
     COMPANY = 'comercio',
     BARRIO = 'barrio',
 }
+
+export enum ClientStatus {
+    ACTIVE = 'activo',
+    INACTIVE = 'inactivo',
+    COLD = 'congelado',
+}

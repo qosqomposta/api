@@ -19,6 +19,8 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { DeliveryOrderModule } from './delivery-order/delivery-order.module';
 import { configPostgresql } from './config/orm.config';
+import { UsersService } from './users/users.service';
+import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
@@ -44,6 +46,7 @@ import { configPostgresql } from './config/orm.config';
         PaymentMethodModule,
         SubscriptionModule,
         DeliveryOrderModule,
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [AppService],

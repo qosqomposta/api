@@ -89,7 +89,6 @@ export class DeliveryOrderService {
             return sum + Number(item.waste_weight);
         }, 0);
 
-        console.log(year);
         return {
             delivery_orders: deliveryOrders,
             total: total,
